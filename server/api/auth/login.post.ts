@@ -89,13 +89,13 @@ export default defineEventHandler(async (event) => {
       }
     }, 'LOGIN_SUCCESS')
   } catch (error: any) {
+    // Log unexpected errors
+    console.error('Login error:', error)
+    
     // If it's already a createError, throw it as is
     if (error.statusCode) {
       throw error
     }
-
-    // Log unexpected errors
-    console.error('Login error:', error)
 
     throw createPredefinedError('INTERNAL_ERROR')
   }

@@ -22,7 +22,13 @@
       "Bash(pkill:*)",
       "Bash(PORT=3001 nvm use:*)",
       "Bash(find:*)",
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "Bash(npm run preview:*)",
+      "Bash(lsof:*)",
+      "Bash(kill:*)",
+      "Bash(chmod:*)",
+      "Bash(npm run build:*)",
+      "Bash(xargs kill:*)"
     ],
     "deny": [],
     "ask": []
