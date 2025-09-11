@@ -80,14 +80,14 @@ export const useToast = () => {
     return createToast({ ...options, message, title, type: 'info' })
   }
 
-  const confirm = (message: string, title?: string, onConfirm?: (result: boolean) => void) => {
-    return createToast({ 
-      message, 
-      title, 
-      type: 'confirm', 
-      duration: 0, // Don't auto-close confirm dialogs
-      position: 'center',
-      onConfirm 
+  const confirm = (title: string, message: string, variant: 'primary' | 'error' | 'warning' | 'success' = 'primary'): Promise<boolean> => {
+    const { showConfirm } = useConfirm()
+    return showConfirm({
+      title,
+      message,
+      variant,
+      confirmText: 'ตกลง',
+      cancelText: 'ยกเลิก'
     })
   }
 

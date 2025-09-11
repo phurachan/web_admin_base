@@ -362,8 +362,16 @@ const deleteRole = async (role: any) => {
     return
   }
 
-  if (confirm(`Are you sure you want to delete the role "${role.name}"?`)) {
-    try {
+  try {
+    // Show confirmation dialog using useToast
+    const { confirm } = useToast()
+    const confirmed = await confirm(
+      'ยืนยันการลบบทบาท',
+      `คุณต้องการลบบทบาท "${role.name}" หรือไม่?\nการดำเนินการนี้ไม่สามารถยกเลิกได้`,
+      'error'
+    )
+
+    if (confirmed) {
       await rolesStore.deleteRole({
         body: {
           id: role.id
@@ -371,10 +379,10 @@ const deleteRole = async (role: any) => {
       })
       await fetchRoles() // Refresh data
       useToast().success(ALERT_TEXT.DELETE_SUCCESS.th)
-    } catch (error) {
-      console.error('Error deleting role:', error)
-      useToast().error(ALERT_TEXT.DELETE_FAILED.th)
     }
+  } catch (error) {
+    console.error('Error deleting role:', error)
+    useToast().error(ALERT_TEXT.DELETE_FAILED.th)
   }
 }
 

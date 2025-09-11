@@ -217,6 +217,9 @@
 
       <!-- Toast Container -->
       <ToastContainer />
+      
+      <!-- Confirm Container -->
+      <ConfirmContainer />
     </div>
   </ClientOnly>
 </template>

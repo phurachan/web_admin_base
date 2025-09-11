@@ -55,8 +55,9 @@
         <!-- Actions Column -->
         <template #actions="{ row }">
           <div class="flex gap-2">
-            <BaseButton @click="editUser(row)" variant="ghost" size="sm" icon-left="user" title="Edit User" />
+            <BaseButton @click="editUser(row)" variant="ghost" size="sm" icon-left="pencil" title="Edit User" />
             <BaseButton @click="editUserRoles(row)" variant="ghost" size="sm" icon-left="key" title="Edit Roles" />
+            <BaseButton @click="deleteUser(row)" variant="ghost" size="sm" icon-left="trash" title="Delete User" class="text-error hover:text-error" />
           </div>
         </template>
       </BaseTable>
@@ -308,15 +309,6 @@ const fetchUsers = async () => {
   }
 }
 
-const fetchUserRoles = async (userId: string) => {
-  try {
-    const response = await usersStore.fetchUserRoles({ body: { id: userId } })
-    return response.data || []
-  } catch (error) {
-    console.error('Error fetching user roles:', error)
-    return []
-  }
-}
 
 const editUserRoles = async (user: any) => {
   selectedUser.value = user
@@ -329,9 +321,8 @@ const editUserRoles = async (user: any) => {
     }
   })
 
-  // Fetch current roles for the user
-  const currentRoles = await fetchUserRoles(user.id)
-  selectedRoles.value = currentRoles.filter((role: any) => role && role.id).map((role: any) => role.id)
+  // Set current user roles from the user object (already populated from API)
+  selectedRoles.value = user.roles ? user.roles.map((role: any) => role.id || role._id) : []
 
   showUserRolesModal.value = true
 }
@@ -530,6 +521,27 @@ const saveUser = async () => {
     useToast().error(BaseResponseError.getMessageTh(error))
   } finally {
     savingUser.value = false
+  }
+}
+
+const deleteUser = async (user: any) => {
+  try {
+    // Show confirmation dialog using useToast
+    const { confirm } = useToast()
+    const confirmed = await confirm(
+      'ยืนยันการลบผู้ใช้',
+      `คุณต้องการลบผู้ใช้ "${user.name}" หรือไม่?\nการดำเนินการนี้ไม่สามารถยกเลิกได้`,
+      'error'
+    )
+    
+    if (confirmed) {
+      await usersStore.deleteUser({ body: { id: user.id } })
+      await fetchUsers() // Refresh data
+      useToast().success('ลบผู้ใช้เรียบร้อยแล้ว')
+    }
+  } catch (error: any) {
+    console.error('Error deleting user:', error)
+    useToast().error(BaseResponseError.getMessageTh(error))
   }
 }
 

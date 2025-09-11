@@ -415,8 +415,16 @@ const editPermission = (permission: any) => {
 }
 
 const deletePermission = async (permission: any) => {
-  if (confirm(`Are you sure you want to delete the permission "${permission.name}"?`)) {
-    try {
+  try {
+    // Show confirmation dialog using useToast
+    const { confirm } = useToast()
+    const confirmed = await confirm(
+      'ยืนยันการลบสิทธิ์',
+      `คุณต้องการลบสิทธิ์ "${permission.name}" หรือไม่?\nการดำเนินการนี้ไม่สามารถยกเลิกได้`,
+      'error'
+    )
+
+    if (confirmed) {
       await permissionsStore.deletePermission({
         body: {
           id: permission.id
@@ -424,10 +432,10 @@ const deletePermission = async (permission: any) => {
       })
       await fetchPermissions() // Refresh data
       useToast().success(ALERT_TEXT.DELETE_SUCCESS.th)
-    } catch (error) {
-      console.error('Error deleting permission:', error)
-      useToast().error(ALERT_TEXT.DELETE_FAILED.th)
     }
+  } catch (error) {
+    console.error('Error deleting permission:', error)
+    useToast().error(ALERT_TEXT.DELETE_FAILED.th)
   }
 }
 

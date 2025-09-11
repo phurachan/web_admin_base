@@ -85,7 +85,12 @@ export default defineEventHandler(async (event) => {
       lastLogin: user.lastLogin,
       emailVerified: user.emailVerified,
       isActive: user.isActive,
-      roles: user.roles || []
+      roles: user.roles ? user.roles.map((role: any) => ({
+        id: role._id.toString(),
+        name: role.name,
+        description: role.description,
+        isActive: role.isActive
+      })) : []
     }))
 
     return createSuccessResponseWithMessages({

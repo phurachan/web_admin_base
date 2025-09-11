@@ -19,6 +19,8 @@ export interface IUser extends Document {
   passwordResetToken?: string
   passwordResetExpires?: Date
   emailVerificationToken?: string
+  deletedAt?: Date
+  deletedBy?: mongoose.Types.ObjectId
   createdAt: Date
   updatedAt: Date
   comparePassword(candidatePassword: string): Promise<boolean>
@@ -103,6 +105,13 @@ const UserSchema = new Schema<IUser>({
   },
   emailVerificationToken: {
     type: String
+  },
+  deletedAt: {
+    type: Date
+  },
+  deletedBy: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
   }
 }, {
   timestamps: true,
