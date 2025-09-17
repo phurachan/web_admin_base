@@ -181,118 +181,162 @@ export const API_ERROR_MESSAGES = {
   }
 } as const
 
-// Predefined error responses
+// Validation error detail constants for i18n
+export const VALIDATION_DETAILS = {
+  // Field Requirements
+  FIELD_NAME_REQUIRED: 'FIELD_NAME_REQUIRED',
+  FIELD_EMAIL_REQUIRED: 'FIELD_EMAIL_REQUIRED',
+  FIELD_PASSWORD_REQUIRED: 'FIELD_PASSWORD_REQUIRED',
+  FIELD_ROLE_REQUIRED: 'FIELD_ROLE_REQUIRED',
+  FIELD_MODULE_REQUIRED: 'FIELD_MODULE_REQUIRED',
+  FIELD_ACTION_REQUIRED: 'FIELD_ACTION_REQUIRED',
+  FIELD_RESOURCE_REQUIRED: 'FIELD_RESOURCE_REQUIRED',
+  FIELD_DESCRIPTION_REQUIRED: 'FIELD_DESCRIPTION_REQUIRED',
+  FIELD_PERMISSIONS_REQUIRED: 'FIELD_PERMISSIONS_REQUIRED',
+
+  // Field Validation
+  PASSWORD_MIN_6: 'PASSWORD_MIN_6',
+  EMAIL_INVALID_FORMAT: 'EMAIL_INVALID_FORMAT',
+  NAME_MIN_2_CHARS: 'NAME_MIN_2_CHARS',
+  ROLE_INVALID_VALUE: 'ROLE_INVALID_VALUE',
+  DEPARTMENT_INVALID_VALUE: 'DEPARTMENT_INVALID_VALUE',
+  POSITION_INVALID_VALUE: 'POSITION_INVALID_VALUE',
+
+  // Permission Validation
+  PERMISSION_NAME_INVALID: 'PERMISSION_NAME_INVALID',
+  PERMISSION_MODULE_INVALID: 'PERMISSION_MODULE_INVALID',
+  PERMISSION_ACTION_INVALID: 'PERMISSION_ACTION_INVALID',
+  PERMISSION_RESOURCE_INVALID: 'PERMISSION_RESOURCE_INVALID',
+  PERMISSION_TYPE_INVALID: 'PERMISSION_TYPE_INVALID',
+
+  // Role Validation
+  ROLE_NAME_INVALID: 'ROLE_NAME_INVALID',
+  ROLE_PERMISSIONS_INVALID: 'ROLE_PERMISSIONS_INVALID',
+
+  // User Validation
+  USER_ID_INVALID: 'USER_ID_INVALID',
+  USER_EMAIL_DUPLICATE: 'USER_EMAIL_DUPLICATE',
+  USER_PASSWORD_TOO_WEAK: 'USER_PASSWORD_TOO_WEAK',
+
+  // Common Validation
+  FIELD_TOO_LONG: 'FIELD_TOO_LONG',
+  FIELD_TOO_SHORT: 'FIELD_TOO_SHORT',
+  FIELD_INVALID_CHARACTERS: 'FIELD_INVALID_CHARACTERS',
+  FIELD_INVALID_FORMAT: 'FIELD_INVALID_FORMAT'
+} as const
+
+// Predefined error responses - Using i18n keys for statusMessage
 export const API_ERRORS = {
   // Authentication & Authorization
   INVALID_CREDENTIALS: {
     statusCode: HTTP_STATUS.UNAUTHORIZED,
-    statusMessage: 'Invalid email or password'
+    statusMessage: 'INVALID_EMAIL_PASSWORD'
   },
   UNAUTHORIZED: {
     statusCode: HTTP_STATUS.UNAUTHORIZED,
-    statusMessage: 'Authentication required'
+    statusMessage: 'AUTHENTICATION_REQUIRED'
   },
   FORBIDDEN: {
     statusCode: HTTP_STATUS.FORBIDDEN,
-    statusMessage: 'Access denied. Insufficient permissions'
+    statusMessage: 'ACCESS_DENIED_INSUFFICIENT_PERMISSIONS'
   },
   TOKEN_EXPIRED: {
     statusCode: HTTP_STATUS.UNAUTHORIZED,
-    statusMessage: 'Authentication token has expired'
+    statusMessage: 'TOKEN_EXPIRED'
   },
 
   // Validation
   VALIDATION_ERROR: {
     statusCode: HTTP_STATUS.BAD_REQUEST,
-    statusMessage: 'Validation failed'
+    statusMessage: 'VALIDATION_FAILED'
   },
   MISSING_REQUIRED_FIELDS: {
     statusCode: HTTP_STATUS.BAD_REQUEST,
-    statusMessage: 'Required fields are missing'
+    statusMessage: 'REQUIRED_FIELDS_MISSING'
   },
   INVALID_INPUT: {
     statusCode: HTTP_STATUS.BAD_REQUEST,
-    statusMessage: 'Invalid input provided'
+    statusMessage: 'INVALID_INPUT_PROVIDED'
   },
 
   // Resource Management
   NOT_FOUND: {
     statusCode: HTTP_STATUS.NOT_FOUND,
-    statusMessage: 'Resource not found'
+    statusMessage: 'RESOURCE_NOT_FOUND'
   },
   ALREADY_EXISTS: {
     statusCode: HTTP_STATUS.CONFLICT,
-    statusMessage: 'Resource already exists'
+    statusMessage: 'RESOURCE_ALREADY_EXISTS'
   },
   DATA_USED: {
     statusCode: HTTP_STATUS.CONFLICT,
-    statusMessage: 'Resource is used'
+    statusMessage: 'RESOURCE_IS_USED'
   },
 
   // Server Errors
   INTERNAL_ERROR: {
     statusCode: HTTP_STATUS.INTERNAL_SERVER_ERROR,
-    statusMessage: 'Internal server error'
+    statusMessage: 'INTERNAL_SERVER_ERROR'
   },
   DATABASE_ERROR: {
     statusCode: HTTP_STATUS.INTERNAL_SERVER_ERROR,
-    statusMessage: 'Database operation failed'
+    statusMessage: 'DATABASE_OPERATION_FAILED'
   },
 
   // User Management
   USER_NOT_FOUND: {
     statusCode: HTTP_STATUS.NOT_FOUND,
-    statusMessage: 'User not found'
+    statusMessage: 'USER_NOT_FOUND'
   },
   USER_ALREADY_EXISTS: {
     statusCode: HTTP_STATUS.CONFLICT,
-    statusMessage: 'User already exists'
+    statusMessage: 'USER_ALREADY_EXISTS'
   },
   INVALID_USER_ID: {
     statusCode: HTTP_STATUS.BAD_REQUEST,
-    statusMessage: 'Invalid user ID'
+    statusMessage: 'INVALID_USER_ID'
   },
 
   // Role Management
   ROLE_NOT_FOUND: {
     statusCode: HTTP_STATUS.NOT_FOUND,
-    statusMessage: 'Role not found'
+    statusMessage: 'ROLE_NOT_FOUND'
   },
   ROLE_ALREADY_EXISTS: {
     statusCode: HTTP_STATUS.CONFLICT,
-    statusMessage: 'Role already exists'
+    statusMessage: 'ROLE_ALREADY_EXISTS'
   },
   INVALID_ROLE_ID: {
     statusCode: HTTP_STATUS.BAD_REQUEST,
-    statusMessage: 'Invalid role ID'
+    statusMessage: 'INVALID_ROLE_ID'
   },
   ROLE_IN_USE: {
     statusCode: HTTP_STATUS.BAD_REQUEST,
-    statusMessage: 'Role is currently in use and cannot be deleted'
+    statusMessage: 'ROLE_IN_USE_CANNOT_DELETE'
   },
 
   // Permission Management
   PERMISSION_NOT_FOUND: {
     statusCode: HTTP_STATUS.NOT_FOUND,
-    statusMessage: 'Permission not found'
+    statusMessage: 'PERMISSION_NOT_FOUND'
   },
   PERMISSION_ALREADY_EXISTS: {
     statusCode: HTTP_STATUS.CONFLICT,
-    statusMessage: 'Permission already exists'
+    statusMessage: 'PERMISSION_ALREADY_EXISTS'
   },
   INVALID_PERMISSION_ID: {
     statusCode: HTTP_STATUS.BAD_REQUEST,
-    statusMessage: 'Invalid permission ID'
+    statusMessage: 'INVALID_PERMISSION_ID'
   },
   PERMISSION_IN_USE: {
     statusCode: HTTP_STATUS.BAD_REQUEST,
-    statusMessage: 'Permission is currently in use and cannot be deleted'
+    statusMessage: 'PERMISSION_IN_USE_CANNOT_DELETE'
   },
 
   // Account Status
   ACCOUNT_DEACTIVATED: {
     statusCode: HTTP_STATUS.UNAUTHORIZED,
-    statusMessage: 'Account has been deactivated'
+    statusMessage: 'ACCOUNT_DEACTIVATED'
   }
 } as const
 

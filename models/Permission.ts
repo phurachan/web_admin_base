@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose'
+import { MODEL_VALIDATION_MESSAGES } from './constants/validation'
 
 export interface IPermission extends Document {
   _id: mongoose.Types.ObjectId
@@ -16,38 +17,38 @@ export interface IPermission extends Document {
 const PermissionSchema = new Schema<IPermission>({
   name: {
     type: String,
-    required: [true, 'Permission name is required'],
+    required: [true, MODEL_VALIDATION_MESSAGES.PERMISSION_NAME_REQUIRED],
     unique: true,
     trim: true,
-    maxlength: [100, 'Permission name cannot be more than 100 characters']
+    maxlength: [100, MODEL_VALIDATION_MESSAGES.PERMISSION_NAME_MAX_LENGTH]
   },
   description: {
     type: String,
-    required: [true, 'Description is required'],
+    required: [true, MODEL_VALIDATION_MESSAGES.PERMISSION_DESCRIPTION_REQUIRED],
     trim: true,
-    maxlength: [200, 'Description cannot be more than 200 characters']
+    maxlength: [200, MODEL_VALIDATION_MESSAGES.PERMISSION_DESCRIPTION_MAX_LENGTH]
   },
   module: {
     type: String,
-    required: [true, 'Module is required'],
+    required: [true, MODEL_VALIDATION_MESSAGES.PERMISSION_MODULE_REQUIRED],
     trim: true,
-    maxlength: [50, 'Module cannot be more than 50 characters']
+    maxlength: [50, MODEL_VALIDATION_MESSAGES.PERMISSION_MODULE_MAX_LENGTH]
   },
   action: {
     type: String,
-    required: [true, 'Action is required'],
+    required: [true, MODEL_VALIDATION_MESSAGES.PERMISSION_ACTION_REQUIRED],
     enum: ['create', 'read', 'update', 'delete', 'access', 'hr_view', 'approve', 'reject', 'balance_manage', 'export', 'submit', 'reports'],
     trim: true
   },
   resource: {
     type: String,
-    required: [true, 'Resource is required'],
+    required: [true, MODEL_VALIDATION_MESSAGES.PERMISSION_RESOURCE_REQUIRED],
     trim: true,
-    maxlength: [50, 'Resource cannot be more than 50 characters']
+    maxlength: [50, MODEL_VALIDATION_MESSAGES.PERMISSION_RESOURCE_MAX_LENGTH]
   },
   type: {
     type: String,
-    required: [true, 'Type is required'],
+    required: [true, MODEL_VALIDATION_MESSAGES.PERMISSION_TYPE_REQUIRED],
     enum: ['menu', 'action', 'input'],
     default: 'action'
   },
@@ -59,10 +60,11 @@ const PermissionSchema = new Schema<IPermission>({
   timestamps: true,
   toJSON: {
     transform: function(doc, ret) {
-      ret.id = ret._id.toString()
-      delete ret._id
-      delete ret.__v
-      return ret
+      const { _id, __v, ...permissionData } = ret
+      return {
+        id: _id.toString(),
+        ...permissionData
+      }
     }
   }
 })

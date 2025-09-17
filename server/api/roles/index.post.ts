@@ -2,7 +2,7 @@ import { extractTokenFromHeader, verifyToken } from '~/lib/jwt'
 import { connectMongoDB } from '~/lib/mongodb'
 import Role from '~/models/Role'
 import User from '~/models/User'
-import { createPredefinedError, createSuccessResponseWithMessages } from '~/server/utils/responseHandler'
+import { createPredefinedError, createSuccessResponseWithMessages, VALIDATION_DETAILS } from '~/server/utils/responseHandler'
 
 export default defineEventHandler(async (event) => {
   await connectMongoDB()
@@ -37,7 +37,7 @@ export default defineEventHandler(async (event) => {
     // Validate required fields
     if (!name || !description || !createdBy) {
       throw createPredefinedError('MISSING_REQUIRED_FIELDS', {
-        details: ['name', 'description', 'createdBy']
+        details: [VALIDATION_DETAILS.FIELD_NAME_REQUIRED, VALIDATION_DETAILS.FIELD_DESCRIPTION_REQUIRED, VALIDATION_DETAILS.FIELD_NAME_REQUIRED]
       })
     }
 

@@ -1,7 +1,7 @@
 import { extractTokenFromHeader, verifyToken } from '~/lib/jwt'
 import { connectMongoDB } from '~/lib/mongodb'
 import User from '~/models/User'
-import { createPredefinedError, createSuccessResponseWithMessages } from '~/server/utils/responseHandler'
+import { createPredefinedError, createSuccessResponseWithMessages, VALIDATION_DETAILS } from '~/server/utils/responseHandler'
 
 export default defineEventHandler(async (event) => {
   await connectMongoDB()
@@ -34,7 +34,7 @@ export default defineEventHandler(async (event) => {
 
     if (!id) {
       throw createPredefinedError('MISSING_REQUIRED_FIELDS', {
-        details: ['id']
+        details: [VALIDATION_DETAILS.USER_ID_INVALID]
       })
     }
 

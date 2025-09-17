@@ -84,10 +84,13 @@
               </div>
             </div>
 
+            <!-- Language Switcher -->
+            <LanguageSwitcher />
+
             <!-- Theme Toggle -->
-            <BaseThemeToggle 
-              shape="circle" 
-              variant="ghost" 
+            <BaseThemeToggle
+              shape="circle"
+              variant="ghost"
               size="md"
               @change="onThemeChange"
             />
@@ -332,6 +335,15 @@ const menuSections = ref([
         badge: {
           text: "UI",
           variant: "info"
+        }
+      },
+      {
+        path: "/admin/i18n-test",
+        label: "i18n Test",
+        icon: "language",
+        badge: {
+          text: "Test",
+          variant: "warning"
         }
       }
     ]

@@ -1,7 +1,7 @@
 import { signToken } from '~/lib/jwt'
 import { connectMongoDB } from '~/lib/mongodb'
 import User from '~/models/User'
-import { createPredefinedError, createSuccessResponseWithMessages } from '~/server/utils/responseHandler'
+import { createPredefinedError, createSuccessResponseWithMessages, VALIDATION_DETAILS } from '~/server/utils/responseHandler'
 
 export default defineEventHandler(async (event) => {
   await connectMongoDB()
@@ -13,14 +13,14 @@ export default defineEventHandler(async (event) => {
     // Validate required fields
     if (!name || !email || !password) {
       throw createPredefinedError('MISSING_REQUIRED_FIELDS', {
-        details: ['name', 'email', 'password']
+        details: [VALIDATION_DETAILS.FIELD_NAME_REQUIRED, VALIDATION_DETAILS.FIELD_EMAIL_REQUIRED, VALIDATION_DETAILS.FIELD_PASSWORD_REQUIRED]
       })
     }
 
     // Validate password length
     if (password.length < 6) {
       throw createPredefinedError('INVALID_INPUT', {
-        details: ['Password must be at least 6 characters long']
+        details: [VALIDATION_DETAILS.PASSWORD_MIN_6]
       })
     }
 
@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
 
     if (existingUser) {
       throw createPredefinedError('ALREADY_EXISTS', {
-        details: ['User with this email already exists']
+        details: [VALIDATION_DETAILS.USER_EMAIL_DUPLICATE]
       })
     }
 
@@ -77,7 +77,7 @@ export default defineEventHandler(async (event) => {
     // Handle MongoDB duplicate key error
     if (error.code === 11000) {
       throw createPredefinedError('ALREADY_EXISTS', {
-        details: ['User with this email already exists']
+        details: [VALIDATION_DETAILS.USER_EMAIL_DUPLICATE]
       })
     }
 

@@ -1,6 +1,6 @@
 import Permission from '~/models/Permission'
 import { connectMongoDB } from '~/lib/mongodb'
-import { createPredefinedError, createSuccessResponseWithMessages } from '~/server/utils/responseHandler'
+import { createPredefinedError, createSuccessResponseWithMessages, VALIDATION_DETAILS } from '~/server/utils/responseHandler'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
     
     if (!id) {
       throw createPredefinedError('MISSING_REQUIRED_FIELDS', {
-        details: ['id']
+        details: [VALIDATION_DETAILS.INVALID_PERMISSION_ID]
       })
     }
     

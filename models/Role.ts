@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose'
+import { MODEL_VALIDATION_MESSAGES } from './constants/validation'
 
 export interface IRole extends Document {
   _id: mongoose.Types.ObjectId
@@ -14,16 +15,16 @@ export interface IRole extends Document {
 const RoleSchema = new Schema<IRole>({
   name: {
     type: String,
-    required: [true, 'Role name is required'],
+    required: [true, MODEL_VALIDATION_MESSAGES.ROLE_NAME_REQUIRED],
     unique: true,
     trim: true,
-    maxlength: [50, 'Role name cannot be more than 50 characters']
+    maxlength: [50, MODEL_VALIDATION_MESSAGES.ROLE_NAME_MAX_LENGTH]
   },
   description: {
     type: String,
-    required: [true, 'Description is required'],
+    required: [true, MODEL_VALIDATION_MESSAGES.ROLE_DESCRIPTION_REQUIRED],
     trim: true,
-    maxlength: [200, 'Description cannot be more than 200 characters']
+    maxlength: [200, MODEL_VALIDATION_MESSAGES.ROLE_DESCRIPTION_MAX_LENGTH]
   },
   permissions: [{
     type: String,
@@ -41,10 +42,11 @@ const RoleSchema = new Schema<IRole>({
   timestamps: true,
   toJSON: {
     transform: function(doc, ret) {
-      ret.id = ret._id.toString()
-      delete ret._id
-      delete ret.__v
-      return ret
+      const { _id, __v, ...roleData } = ret
+      return {
+        id: _id.toString(),
+        ...roleData
+      }
     }
   }
 })

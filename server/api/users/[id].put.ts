@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs'
 import { extractTokenFromHeader, verifyToken } from '~/lib/jwt'
 import { connectMongoDB } from '~/lib/mongodb'
 import User from '~/models/User'
-import { createPredefinedError, createSuccessResponseWithMessages } from '~/server/utils/responseHandler'
+import { createPredefinedError, createSuccessResponseWithMessages, VALIDATION_DETAILS } from '~/server/utils/responseHandler'
 
 export default defineEventHandler(async (event) => {
   await connectMongoDB()
@@ -36,7 +36,7 @@ export default defineEventHandler(async (event) => {
 
     if (!userId) {
       throw createPredefinedError('INVALID_INPUT', {
-        details: ['userId']
+        details: [VALIDATION_DETAILS.USER_ID_INVALID]
       })
     }
 
@@ -48,17 +48,17 @@ export default defineEventHandler(async (event) => {
     const errors: Record<string, string> = {}
 
     if (!name || !name.trim()) {
-      errors.name = 'Name is required'
+      errors.name = VALIDATION_DETAILS.FIELD_NAME_REQUIRED
     }
 
     if (!email || !email.trim()) {
-      errors.email = 'Email is required'
+      errors.email = VALIDATION_DETAILS.FIELD_EMAIL_REQUIRED
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      errors.email = 'Please enter a valid email address'
+      errors.email = VALIDATION_DETAILS.EMAIL_INVALID_FORMAT
     }
 
     if (password && password.length < 6) {
-      errors.password = 'Password must be at least 6 characters long'
+      errors.password = VALIDATION_DETAILS.PASSWORD_MIN_6
     }
 
     // Check if email already exists (excluding current user)
@@ -69,7 +69,7 @@ export default defineEventHandler(async (event) => {
       })
 
       if (existingUser) {
-        errors.email = 'Email already exists'
+        errors.email = VALIDATION_DETAILS.USER_EMAIL_DUPLICATE
       }
     }
 

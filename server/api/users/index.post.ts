@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs'
 import { connectMongoDB } from '~/lib/mongodb'
 import User from '~/models/User'
-import { createBadRequestError, createPredefinedError, createSuccessResponseWithMessages } from '~/server/utils/responseHandler'
+import { createBadRequestError, createPredefinedError, createSuccessResponseWithMessages, VALIDATION_DETAILS } from '~/server/utils/responseHandler'
 
 export default defineEventHandler(async (event) => {
   
@@ -13,14 +13,16 @@ export default defineEventHandler(async (event) => {
     // Validate required fields
     if (!body.name || !body.email || !body.password) {
       throw createPredefinedError('MISSING_REQUIRED_FIELDS', {
-        details: ['name', 'email', 'password']
+        details: [VALIDATION_DETAILS.FIELD_NAME_REQUIRED, VALIDATION_DETAILS.FIELD_EMAIL_REQUIRED, VALIDATION_DETAILS.FIELD_PASSWORD_REQUIRED]
       })
     }
 
     // Check if user already exists
     const existingUser = await User.findOne({ email: body.email })
     if (existingUser) {
-      throw createBadRequestError('User with this email already exists')
+      throw createPredefinedError('USER_ALREADY_EXISTS', {
+        details: [VALIDATION_DETAILS.USER_EMAIL_DUPLICATE]
+      })
     }
 
     // Hash the password

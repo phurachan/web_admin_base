@@ -1,5 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose'
 import bcrypt from 'bcryptjs'
+import { MODEL_VALIDATION_MESSAGES } from './constants/validation'
 
 export interface IUser extends Document {
   _id: mongoose.Types.ObjectId
@@ -35,26 +36,26 @@ export interface IUserStatics {
 const UserSchema = new Schema<IUser>({
   name: {
     type: String,
-    required: [true, 'Name is required'],
+    required: [true, MODEL_VALIDATION_MESSAGES.USER_NAME_REQUIRED],
     trim: true,
-    maxlength: [100, 'Name cannot be more than 100 characters']
+    maxlength: [100, MODEL_VALIDATION_MESSAGES.USER_NAME_MAX_LENGTH]
   },
   email: {
     type: String,
-    required: [true, 'Email is required'],
+    required: [true, MODEL_VALIDATION_MESSAGES.USER_EMAIL_REQUIRED],
     unique: true,
     lowercase: true,
     trim: true,
-    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email']
+    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, MODEL_VALIDATION_MESSAGES.USER_EMAIL_INVALID_FORMAT]
   },
   password: {
     type: String,
-    required: [true, 'Password is required'],
-    minlength: [6, 'Password must be at least 6 characters']
+    required: [true, MODEL_VALIDATION_MESSAGES.USER_PASSWORD_REQUIRED],
+    minlength: [6, MODEL_VALIDATION_MESSAGES.USER_PASSWORD_MIN_LENGTH]
   },
   role: {
     type: String,
-    required: [true, 'Role is required'],
+    required: [true, MODEL_VALIDATION_MESSAGES.USER_ROLE_REQUIRED],
     enum: ['admin', 'user'],
     default: 'user'
   },
@@ -65,12 +66,12 @@ const UserSchema = new Schema<IUser>({
   department: {
     type: String,
     trim: true,
-    maxlength: [50, 'Department cannot be more than 50 characters']
+    maxlength: [50, MODEL_VALIDATION_MESSAGES.USER_DEPARTMENT_MAX_LENGTH]
   },
   position: {
     type: String,
     trim: true,
-    maxlength: [50, 'Position cannot be more than 50 characters']
+    maxlength: [50, MODEL_VALIDATION_MESSAGES.USER_POSITION_MAX_LENGTH]
   },
   avatar: {
     type: String,
@@ -79,12 +80,12 @@ const UserSchema = new Schema<IUser>({
   phone: {
     type: String,
     trim: true,
-    maxlength: [20, 'Phone cannot be more than 20 characters']
+    maxlength: [20, MODEL_VALIDATION_MESSAGES.USER_PHONE_MAX_LENGTH]
   },
   website: {
     type: String,
     trim: true,
-    maxlength: [100, 'Website cannot be more than 100 characters']
+    maxlength: [100, MODEL_VALIDATION_MESSAGES.USER_WEBSITE_MAX_LENGTH]
   },
   lastLogin: {
     type: Date
@@ -118,14 +119,11 @@ const UserSchema = new Schema<IUser>({
   toJSON: {
     virtuals: true,
     transform: function(doc, ret) {
-      ret.id = ret._id
-      delete ret._id
-      delete ret.__v
-      delete ret.password
-      delete ret.passwordResetToken
-      delete ret.passwordResetExpires
-      delete ret.emailVerificationToken
-      return ret
+      const { _id, __v, password, passwordResetToken, passwordResetExpires, emailVerificationToken, ...userData } = ret
+      return {
+        id: _id,
+        ...userData
+      }
     }
   },
   toObject: { virtuals: true }

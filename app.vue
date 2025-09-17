@@ -6,11 +6,14 @@
     </NuxtLayout>
     
     <!-- Global Loading Component -->
-    <BaseLoading 
+    <BaseLoading
       :visible="isLoadingActive"
       :message="loadingMessage"
       v-bind="loadingConfig"
     />
+
+    <!-- Global Alert Component -->
+    <GlobalAlert />
   </div>
 </template>
 

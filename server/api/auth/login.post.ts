@@ -2,7 +2,7 @@ import type { AuthLoginRequest } from '~/composables/store_models/auth'
 import { signToken } from '~/lib/jwt'
 import { connectMongoDB } from '~/lib/mongodb'
 import User from '~/models/User'
-import { createPredefinedError, createSuccessResponseWithMessages } from '~/server/utils/responseHandler'
+import { createPredefinedError, createSuccessResponseWithMessages, VALIDATION_DETAILS } from '~/server/utils/responseHandler'
 
 export default defineEventHandler(async (event) => {
   await connectMongoDB()
@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
     // Validate input
     if (!email || !password) {
       throw createPredefinedError('MISSING_REQUIRED_FIELDS', {
-        details: ['email', 'password'],
+        details: [VALIDATION_DETAILS.FIELD_EMAIL_REQUIRED, VALIDATION_DETAILS.FIELD_PASSWORD_REQUIRED],
       })
     }
 

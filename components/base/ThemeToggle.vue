@@ -1,38 +1,25 @@
 <template>
-  <div class="flex items-center gap-2">
-    <!-- Theme Toggle Button -->
-    <button
-      :class="buttonClasses"
-      :disabled="disabled"
-      @click="handleToggle"
-      :title="toggleTooltip"
-      :aria-label="ariaLabel"
-    >
-      <!-- Light Icon (visible in dark mode) -->
-      <BaseIcon 
-        v-if="isDark" 
-        name="sun" 
-        :size="iconSize" 
-        class="transition-all duration-200" 
-      />
-      
-      <!-- Dark Icon (visible in light mode) -->
-      <BaseIcon 
-        v-else 
-        name="moon" 
-        :size="iconSize" 
-        class="transition-all duration-200" 
-      />
-      
-      <!-- Label text if showLabel is true -->
-      <span v-if="showLabel" class="ml-2 text-sm font-medium">
-        {{ currentLabel }}
-      </span>
-    </button>
-    
-    <!-- Theme indicator badge (optional) -->
-    <div v-if="showBadge" class="badge badge-sm" :class="badgeClasses">
-      {{ currentTheme }}
+  <div>
+    <div class="flex items-center gap-2">
+      <!-- Theme Toggle Button -->
+      <button :class="buttonClasses" :disabled="disabled" @click="handleToggle" :title="toggleTooltip"
+        :aria-label="ariaLabel">
+        <!-- Light Icon (visible in dark mode) -->
+        <BaseIcon v-if="!isDark" name="sun" :size="iconSize" class="transition-all duration-200" />
+
+        <!-- Dark Icon (visible in light mode) -->
+        <BaseIcon v-else name="moon" :size="iconSize" class="transition-all duration-200" />
+
+        <!-- Label text if showLabel is true -->
+        <span v-if="showLabel" class="ml-2 text-sm font-medium">
+          {{ currentLabel }}
+        </span>
+      </button>
+
+      <!-- Theme indicator badge (optional) -->
+      <div v-if="showBadge" class="badge badge-sm" :class="badgeClasses">
+        {{ currentTheme }}
+      </div>
     </div>
   </div>
 </template>
@@ -45,12 +32,12 @@ interface Props {
   variant?: 'default' | 'primary' | 'secondary' | 'accent' | 'ghost' | 'outline'
   size?: 'xs' | 'sm' | 'md' | 'lg'
   shape?: 'default' | 'circle' | 'square'
-  
+
   // Features
   showLabel?: boolean
   showBadge?: boolean
   disabled?: boolean
-  
+
   // Custom labels
   lightLabel?: string
   darkLabel?: string
@@ -79,7 +66,7 @@ const { currentTheme, isDark, isLight, toggleTheme } = useTheme()
 const iconSize = computed(() => {
   const sizeMap = {
     xs: 'xs',
-    sm: 'sm', 
+    sm: 'sm',
     md: 'sm',
     lg: 'md'
   }
@@ -120,15 +107,15 @@ const ariaLabel = computed(() => {
 // Handle toggle
 const handleToggle = () => {
   if (props.disabled) return
-  
+
   const previousTheme = currentTheme.value
   toggleTheme()
   const newTheme = currentTheme.value
-  
+
   // Emit events
   emit('toggle', newTheme)
   emit('change', newTheme)
-  
+
   // Optional: Add haptic feedback on mobile
   if ('vibrate' in navigator) {
     navigator.vibrate(50)
