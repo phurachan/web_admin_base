@@ -1,6 +1,6 @@
 import Permission from '~/server/models/Permission'
 import { connectMongoDB } from '~/server/utils/mongodb'
-import { createPredefinedError, createSuccessResponseWithMessages } from '~/server/utils/responseHandler'
+import { API_RESPONSE_CODES, createPredefinedError, createSuccessResponse } from '~/server/utils/responseHandler'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -45,29 +45,30 @@ export default defineEventHandler(async (event) => {
 
     const needsMigration = permissionsWithoutType.length > 0 || invalidTypePermissions.length > 0
 
-    return createSuccessResponseWithMessages({
-      message: needsMigration 
-        ? `Migration needed: ${permissionsWithoutType.length + invalidTypePermissions.length} permissions require type field updates`
-        : 'All permissions have valid type fields',
-      data: {
-        migration: {
-          needed: needsMigration,
-          permissionsNeedingUpdate: permissionsWithoutType.length + invalidTypePermissions.length
-        },
-        summary: {
-          total: totalPermissions,
-          withValidType: validTypeCount,
-          withoutType: permissionsWithoutType.length,
-          withInvalidType: invalidTypePermissions.length
-        },
-        typeCounts: typeCounts.reduce((acc, item) => {
-          acc[item._id] = item.count
-          return acc
-        }, {} as Record<string, number>),
-        details: {
-          permissionsWithoutType: permissionsWithoutType,
-          invalidTypePermissions: invalidTypePermissions
-        }
+    return createSuccessResponse({
+      migration: {
+        needed: needsMigration,
+        permissionsNeedingUpdate: permissionsWithoutType.length + invalidTypePermissions.length
+      },
+      summary: {
+        total: totalPermissions,
+        withValidType: validTypeCount,
+        withoutType: permissionsWithoutType.length,
+        withInvalidType: invalidTypePermissions.length
+      },
+      typeCounts: typeCounts.reduce((acc, item) => {
+        acc[item._id] = item.count
+        return acc
+      }, {} as Record<string, number>),
+      details: {
+        permissionsWithoutType: permissionsWithoutType,
+        invalidTypePermissions: invalidTypePermissions
+      }
+    }, {
+      additionalData: {
+        message: needsMigration
+          ? `Migration needed: ${permissionsWithoutType.length + invalidTypePermissions.length} permissions require type field updates`
+          : 'All permissions have valid type fields',
       }
     })
   } catch (error: any) {
@@ -77,12 +78,12 @@ export default defineEventHandler(async (event) => {
     }
 
     // Handle JWT errors
-    if (error.message === 'Invalid or expired token') {
-      throw createPredefinedError('TOKEN_EXPIRED')
+    if (error.message === API_RESPONSE_CODES.INVALID_OR_EXPIRED_TOKEN) {
+      throw createPredefinedError(API_RESPONSE_CODES.TOKEN_EXPIRED)
     }
 
     // Log unexpected errors for debugging
     console.error('Status check error:', error)
-    throw createPredefinedError('INTERNAL_ERROR')
+    throw createPredefinedError(API_RESPONSE_CODES.INTERNAL_ERROR)
   }
 })

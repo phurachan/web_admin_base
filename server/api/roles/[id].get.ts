@@ -1,8 +1,8 @@
-import { extractTokenFromHeader, verifyToken } from '~/server/utils/jwt'
-import { connectMongoDB } from '~/server/utils/mongodb'
 import Role from '~/server/models/Role'
 import User from '~/server/models/User'
-import { createPredefinedError, createSuccessResponseWithMessages, VALIDATION_DETAILS } from '~/server/utils/responseHandler'
+import { extractTokenFromHeader, verifyToken } from '~/server/utils/jwt'
+import { connectMongoDB } from '~/server/utils/mongodb'
+import { API_RESPONSE_CODES, createPredefinedError, createSuccessResponse, VALIDATION_DETAILS } from '~/server/utils/responseHandler'
 
 export default defineEventHandler(async (event) => {
   await connectMongoDB()
@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
     const token = extractTokenFromHeader(authHeader)
 
     if (!token) {
-      throw createPredefinedError('UNAUTHORIZED')
+      throw createPredefinedError(API_RESPONSE_CODES.UNAUTHORIZED)
     }
 
     // Verify and decode token
@@ -23,18 +23,18 @@ export default defineEventHandler(async (event) => {
     const currentUser = await User.findById(decoded.userId)
 
     if (!currentUser || !currentUser.isActive) {
-      throw createPredefinedError('USER_NOT_FOUND')
+      throw createPredefinedError(API_RESPONSE_CODES.USER_NOT_FOUND)
     }
 
     // Check if user has permission to view roles (admin only)
     if (currentUser.role !== 'admin') {
-      throw createPredefinedError('FORBIDDEN')
+      throw createPredefinedError(API_RESPONSE_CODES.FORBIDDEN)
     }
 
     const id = getRouterParam(event, 'id')
 
     if (!id) {
-      throw createPredefinedError('MISSING_REQUIRED_FIELDS', {
+      throw createPredefinedError(API_RESPONSE_CODES.MISSING_REQUIRED_FIELDS, {
         details: [VALIDATION_DETAILS.INVALID_ROLE_ID]
       })
     }
@@ -42,12 +42,10 @@ export default defineEventHandler(async (event) => {
     const role = await Role.findById(id)
 
     if (!role) {
-      throw createPredefinedError('NOT_FOUND')
+      throw createPredefinedError(API_RESPONSE_CODES.NOT_FOUND)
     }
 
-    return createSuccessResponseWithMessages({
-      data: role
-    })
+    return createSuccessResponse(role)
   } catch (error: any) {
     // If it's already a createError, throw it as is
     if (error.statusCode) {
@@ -55,11 +53,11 @@ export default defineEventHandler(async (event) => {
     }
 
     // Handle JWT errors
-    if (error.message === 'Invalid or expired token') {
-      throw createPredefinedError('TOKEN_EXPIRED')
+    if (error.message === API_RESPONSE_CODES.INVALID_OR_EXPIRED_TOKEN) {
+      throw createPredefinedError(API_RESPONSE_CODES.TOKEN_EXPIRED)
     }
 
     // Log unexpected errors
-    throw createPredefinedError('INTERNAL_ERROR')
+    throw createPredefinedError(API_RESPONSE_CODES.INTERNAL_ERROR)
   }
 })

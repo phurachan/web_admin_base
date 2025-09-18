@@ -1,6 +1,6 @@
 import Permission from '~/server/models/Permission'
 import { connectMongoDB } from '~/server/utils/mongodb'
-import { createPredefinedError, createSuccessResponseWithMessages } from '~/server/utils/responseHandler'
+import { API_RESPONSE_CODES, createPredefinedError, createSuccessResponse } from '~/server/utils/responseHandler'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -21,10 +21,10 @@ export default defineEventHandler(async (event) => {
     for (const permission of permissionsWithoutType) {
       await Permission.findByIdAndUpdate(
         permission._id,
-        { 
-          $set: { 
+        {
+          $set: {
             type: 'action' // Set default value as 'action'
-          } 
+          }
         },
         { runValidators: false } // Skip validation since we're just adding the missing field
       )
@@ -40,10 +40,10 @@ export default defineEventHandler(async (event) => {
     for (const permission of invalidTypePermissions) {
       await Permission.findByIdAndUpdate(
         permission._id,
-        { 
-          $set: { 
+        {
+          $set: {
             type: 'action' // Set default value as 'action' for invalid types
-          } 
+          }
         },
         { runValidators: false }
       )
@@ -63,9 +63,10 @@ export default defineEventHandler(async (event) => {
       migrationComplete: totalPermissions === validTypeCount
     }
 
-    return createSuccessResponseWithMessages({
-      message: `Migration completed successfully. Updated ${updatedCount} permissions with default type 'action'.`,
-      data: migrationStatus
+    return createSuccessResponse(migrationStatus, {
+      additionalData: {
+        message: `Migration completed successfully. Updated ${updatedCount} permissions with default type 'action'.`,
+      }
     })
   } catch (error: any) {
     // If it's already a createError, throw it as is
@@ -74,20 +75,20 @@ export default defineEventHandler(async (event) => {
     }
 
     // Handle JWT errors
-    if (error.message === 'Invalid or expired token') {
-      throw createPredefinedError('TOKEN_EXPIRED')
+    if (error.message === API_RESPONSE_CODES.INVALID_OR_EXPIRED_TOKEN) {
+      throw createPredefinedError(API_RESPONSE_CODES.TOKEN_EXPIRED)
     }
 
     // Handle validation errors
-    if (error.name === 'ValidationError') {
+    if (error.name === API_RESPONSE_CODES.VALIDATION_ERROR_EXCEPTION_NAME) {
       const fieldErrors = Object.keys(error.errors)
-      throw createPredefinedError('VALIDATION_ERROR', {
+      throw createPredefinedError(API_RESPONSE_CODES.VALIDATION_ERROR, {
         details: fieldErrors
       })
     }
 
     // Log unexpected errors for debugging
     console.error('Migration error:', error)
-    throw createPredefinedError('INTERNAL_ERROR')
+    throw createPredefinedError(API_RESPONSE_CODES.INTERNAL_ERROR)
   }
 })

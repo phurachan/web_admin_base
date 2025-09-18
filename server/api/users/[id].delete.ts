@@ -1,7 +1,7 @@
 import { extractTokenFromHeader, verifyToken } from '~/server/utils/jwt'
 import { connectMongoDB } from '~/server/utils/mongodb'
 import User from '~/server/models/User'
-import { createPredefinedError, createSuccessResponseWithMessages } from '~/server/utils/responseHandler'
+import { API_RESPONSE_CODES, createPredefinedError, createSuccessResponse } from '~/server/utils/responseHandler'
 
 export default defineEventHandler(async (event) => {
   await connectMongoDB()
@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
     const token = extractTokenFromHeader(authHeader)
 
     if (!token) {
-      throw createPredefinedError('UNAUTHORIZED')
+      throw createPredefinedError(API_RESPONSE_CODES.UNAUTHORIZED)
     }
 
     // Verify and decode token
@@ -22,37 +22,37 @@ export default defineEventHandler(async (event) => {
     const currentUser = await User.findById(decoded.userId)
 
     if (!currentUser || !currentUser.isActive) {
-      throw createPredefinedError('UNAUTHORIZED')
+      throw createPredefinedError(API_RESPONSE_CODES.UNAUTHORIZED)
     }
 
     // Check if user has permission to delete users (admin only)
     if (currentUser.role !== 'admin') {
-      throw createPredefinedError('FORBIDDEN')
+      throw createPredefinedError(API_RESPONSE_CODES.FORBIDDEN)
     }
 
     // Get user ID from params
     const userId = getRouterParam(event, 'id')
 
     if (!userId) {
-      throw createPredefinedError('INVALID_REQUEST', 'User ID is required')
+      throw createPredefinedError(API_RESPONSE_CODES.MISSING_REQUIRED_FIELDS, 'User ID is required')
     }
 
     // Prevent deleting self
     if (userId === currentUser._id.toString()) {
-      throw createPredefinedError('INVALID_REQUEST', 'Cannot delete your own account')
+      throw createPredefinedError(API_RESPONSE_CODES.DATA_USED, 'Cannot delete your own account')
     }
 
     // Find user to delete
     const userToDelete = await User.findById(userId)
 
     if (!userToDelete) {
-      throw createPredefinedError('NOT_FOUND', 'User not found')
+      throw createPredefinedError(API_RESPONSE_CODES.NOT_FOUND, 'User not found')
     }
 
     // Soft delete - set isActive to false
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { 
+      {
         isActive: false,
         deletedAt: new Date(),
         deletedBy: currentUser._id
@@ -60,14 +60,11 @@ export default defineEventHandler(async (event) => {
       { new: true }
     ).select('_id name email isActive')
 
-    return createSuccessResponseWithMessages({
-      data: {
-        id: updatedUser?._id.toString(),
-        name: updatedUser?.name,
-        email: updatedUser?.email,
-        isActive: updatedUser?.isActive
-      },
-      message: 'User deleted successfully'
+    return createSuccessResponse({
+      id: updatedUser?._id.toString(),
+      name: updatedUser?.name,
+      email: updatedUser?.email,
+      isActive: updatedUser?.isActive
     })
 
   } catch (error: any) {
@@ -77,13 +74,13 @@ export default defineEventHandler(async (event) => {
     }
 
     // Handle JWT errors
-    if (error.message === 'Invalid or expired token') {
-      throw createPredefinedError('TOKEN_EXPIRED')
+    if (error.message === API_RESPONSE_CODES.INVALID_OR_EXPIRED_TOKEN) {
+      throw createPredefinedError(API_RESPONSE_CODES.TOKEN_EXPIRED)
     }
 
     // Log unexpected errors
     console.error('Delete user error:', error)
 
-    throw createPredefinedError('INTERNAL_ERROR')
+    throw createPredefinedError(API_RESPONSE_CODES.INTERNAL_ERROR)
   }
 })

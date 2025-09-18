@@ -2,7 +2,7 @@ import { extractTokenFromHeader, verifyToken } from '~/server/utils/jwt'
 import { connectMongoDB } from '~/server/utils/mongodb'
 import Role from '~/server/models/Role'
 import User from '~/server/models/User'
-import { createPredefinedError, createSuccessResponseWithMessages, VALIDATION_DETAILS } from '~/server/utils/responseHandler'
+import { API_RESPONSE_CODES, createPredefinedError, createSuccessResponse, VALIDATION_DETAILS } from '~/server/utils/responseHandler'
 
 export default defineEventHandler(async (event) => {
   await connectMongoDB()
@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
     const token = extractTokenFromHeader(authHeader)
 
     if (!token) {
-      throw createPredefinedError('UNAUTHORIZED')
+      throw createPredefinedError(API_RESPONSE_CODES.UNAUTHORIZED)
     }
 
     // Verify and decode token
@@ -23,12 +23,12 @@ export default defineEventHandler(async (event) => {
     const currentUser = await User.findById(decoded.userId)
 
     if (!currentUser || !currentUser.isActive) {
-      throw createPredefinedError('USER_NOT_FOUND')
+      throw createPredefinedError(API_RESPONSE_CODES.USER_NOT_FOUND)
     }
 
     // Check if user has permission to create roles (admin only)
     if (currentUser.role !== 'admin') {
-      throw createPredefinedError('FORBIDDEN')
+      throw createPredefinedError(API_RESPONSE_CODES.FORBIDDEN)
     }
 
     const body = await readBody(event)
@@ -36,7 +36,7 @@ export default defineEventHandler(async (event) => {
 
     // Validate required fields
     if (!name || !description || !createdBy) {
-      throw createPredefinedError('MISSING_REQUIRED_FIELDS', {
+      throw createPredefinedError(API_RESPONSE_CODES.MISSING_REQUIRED_FIELDS, {
         details: [VALIDATION_DETAILS.FIELD_NAME_REQUIRED, VALIDATION_DETAILS.FIELD_DESCRIPTION_REQUIRED, VALIDATION_DETAILS.FIELD_NAME_REQUIRED]
       })
     }
@@ -44,7 +44,7 @@ export default defineEventHandler(async (event) => {
     // Check if role already exists
     const existingRole = await Role.findOne({ name })
     if (existingRole) {
-      throw createPredefinedError('ALREADY_EXISTS')
+      throw createPredefinedError(API_RESPONSE_CODES.ALREADY_EXISTS)
     }
 
     // Create new role
@@ -58,9 +58,7 @@ export default defineEventHandler(async (event) => {
 
     await role.save()
 
-    return createSuccessResponseWithMessages({
-      data: role
-    })
+    return createSuccessResponse(role)
   } catch (error: any) {
     // If it's already a createError, throw it as is
     if (error.statusCode) {
@@ -68,24 +66,24 @@ export default defineEventHandler(async (event) => {
     }
 
     // Handle JWT errors
-    if (error.message === 'Invalid or expired token') {
-      throw createPredefinedError('TOKEN_EXPIRED')
+    if (error.message === API_RESPONSE_CODES.INVALID_OR_EXPIRED_TOKEN) {
+      throw createPredefinedError(API_RESPONSE_CODES.TOKEN_EXPIRED)
     }
 
     // Handle validation errors
-    if (error.name === 'ValidationError') {
+    if (error.name === API_RESPONSE_CODES.VALIDATION_ERROR_EXCEPTION_NAME) {
       const fieldErrors = Object.keys(error.errors)
-      throw createPredefinedError('VALIDATION_ERROR', {
+      throw createPredefinedError(API_RESPONSE_CODES.VALIDATION_ERROR, {
         details: fieldErrors
       })
     }
 
     // Handle duplicate key errors
     if (error.code === 11000) {
-      throw createPredefinedError('ALREADY_EXISTS')
+      throw createPredefinedError(API_RESPONSE_CODES.ALREADY_EXISTS)
     }
 
     // Log unexpected errors
-    throw createPredefinedError('INTERNAL_ERROR')
+    throw createPredefinedError(API_RESPONSE_CODES.INTERNAL_ERROR)
   }
 })

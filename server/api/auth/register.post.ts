@@ -1,7 +1,7 @@
+import User from '~/server/models/User'
 import { signToken } from '~/server/utils/jwt'
 import { connectMongoDB } from '~/server/utils/mongodb'
-import User from '~/server/models/User'
-import { createPredefinedError, createSuccessResponseWithMessages, VALIDATION_DETAILS } from '~/server/utils/responseHandler'
+import { API_RESPONSE_CODES, createPredefinedError, createSuccessResponse, VALIDATION_DETAILS } from '~/server/utils/responseHandler'
 
 export default defineEventHandler(async (event) => {
   await connectMongoDB()
@@ -12,14 +12,14 @@ export default defineEventHandler(async (event) => {
 
     // Validate required fields
     if (!name || !email || !password) {
-      throw createPredefinedError('MISSING_REQUIRED_FIELDS', {
+      throw createPredefinedError(API_RESPONSE_CODES.MISSING_REQUIRED_FIELDS, {
         details: [VALIDATION_DETAILS.FIELD_NAME_REQUIRED, VALIDATION_DETAILS.FIELD_EMAIL_REQUIRED, VALIDATION_DETAILS.FIELD_PASSWORD_REQUIRED]
       })
     }
 
     // Validate password length
     if (password.length < 6) {
-      throw createPredefinedError('INVALID_INPUT', {
+      throw createPredefinedError(API_RESPONSE_CODES.INVALID_INPUT, {
         details: [VALIDATION_DETAILS.PASSWORD_MIN_6]
       })
     }
@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
     const existingUser = await User.findOne({ email: email.toLowerCase().trim() })
 
     if (existingUser) {
-      throw createPredefinedError('ALREADY_EXISTS', {
+      throw createPredefinedError(API_RESPONSE_CODES.ALREADY_EXISTS, {
         details: [VALIDATION_DETAILS.USER_EMAIL_DUPLICATE]
       })
     }
@@ -54,18 +54,16 @@ export default defineEventHandler(async (event) => {
     })
 
     // Return user data and token
-    return createSuccessResponseWithMessages({
-      data: {
-        token,
-        user: {
-          id: user._id.toString(),
-          name: user.name,
-          email: user.email,
-          role: user.role,
-          department: user.department,
-          position: user.position,
-          avatar: user.avatar
-        }
+    return createSuccessResponse({
+      token,
+      user: {
+        id: user._id.toString(),
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        department: user.department,
+        position: user.position,
+        avatar: user.avatar
       }
     })
   } catch (error: any) {
@@ -76,15 +74,15 @@ export default defineEventHandler(async (event) => {
 
     // Handle MongoDB duplicate key error
     if (error.code === 11000) {
-      throw createPredefinedError('ALREADY_EXISTS', {
+      throw createPredefinedError(API_RESPONSE_CODES.ALREADY_EXISTS, {
         details: [VALIDATION_DETAILS.USER_EMAIL_DUPLICATE]
       })
     }
 
     // Handle validation errors
-    if (error.name === 'ValidationError') {
+    if (error.name === API_RESPONSE_CODES.VALIDATION_ERROR_EXCEPTION_NAME) {
       const message = (Object.values(error.errors)[0] as any)?.message || 'Validation error'
-      throw createPredefinedError('INVALID_INPUT', {
+      throw createPredefinedError(API_RESPONSE_CODES.INVALID_INPUT, {
         details: [(message || 'Validation error')]
       })
     }
@@ -92,7 +90,7 @@ export default defineEventHandler(async (event) => {
     // Log unexpected errors
     console.error('Registration error:', error)
 
-    throw createPredefinedError('INTERNAL_ERROR', {
+    throw createPredefinedError(API_RESPONSE_CODES.INTERNAL_ERROR, {
       details: [(error?.message || 'Internal server error')]
     })
   }

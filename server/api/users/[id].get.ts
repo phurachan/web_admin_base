@@ -1,7 +1,7 @@
+import User from '~/server/models/User'
 import { extractTokenFromHeader, verifyToken } from '~/server/utils/jwt'
 import { connectMongoDB } from '~/server/utils/mongodb'
-import User from '~/server/models/User'
-import { createPredefinedError, createSuccessResponseWithMessages } from '~/server/utils/responseHandler'
+import { API_RESPONSE_CODES, createPredefinedError, createSuccessResponse } from '~/server/utils/responseHandler'
 
 export default defineEventHandler(async (event) => {
   await connectMongoDB()
@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
     const token = extractTokenFromHeader(authHeader)
 
     if (!token) {
-      throw createPredefinedError('UNAUTHORIZED')
+      throw createPredefinedError(API_RESPONSE_CODES.UNAUTHORIZED)
     }
 
     // Verify and decode token
@@ -22,19 +22,19 @@ export default defineEventHandler(async (event) => {
     const currentUser = await User.findById(decoded.userId)
 
     if (!currentUser || !currentUser.isActive) {
-      throw createPredefinedError('USER_NOT_FOUND')
+      throw createPredefinedError(API_RESPONSE_CODES.USER_NOT_FOUND)
     }
 
     // Get user ID from route params
     const userId = getRouterParam(event, 'id')
 
     if (!userId) {
-      throw createPredefinedError('INVALID_USER_ID')
+      throw createPredefinedError(API_RESPONSE_CODES.INVALID_USER_ID)
     }
 
     // Check if user has permission to view users (admin or viewing own profile)
     if (currentUser.role !== 'admin' && currentUser._id.toString() !== userId) {
-      throw createPredefinedError('FORBIDDEN')
+      throw createPredefinedError(API_RESPONSE_CODES.FORBIDDEN)
     }
 
     // Find the user
@@ -44,7 +44,7 @@ export default defineEventHandler(async (event) => {
       .lean()
 
     if (!user) {
-      throw createPredefinedError('USER_NOT_FOUND')
+      throw createPredefinedError(API_RESPONSE_CODES.USER_NOT_FOUND)
     }
 
     // Transform user data
@@ -64,7 +64,7 @@ export default defineEventHandler(async (event) => {
       updatedAt: user.updatedAt
     }
 
-    return createSuccessResponseWithMessages({data: transformedUser})
+    return createSuccessResponse(transformedUser)
 
   } catch (error: any) {
     // If it's already a createError, throw it as is
@@ -73,13 +73,13 @@ export default defineEventHandler(async (event) => {
     }
 
     // Handle JWT errors
-    if (error.message === 'Invalid or expired token') {
-      throw createPredefinedError('TOKEN_EXPIRED')
+    if (error.message === API_RESPONSE_CODES.INVALID_OR_EXPIRED_TOKEN) {
+      throw createPredefinedError(API_RESPONSE_CODES.TOKEN_EXPIRED)
     }
 
     // Log unexpected errors
     console.error('Get user error:', error)
 
-    throw createPredefinedError('INTERNAL_ERROR')
+    throw createPredefinedError(API_RESPONSE_CODES.INTERNAL_ERROR)
   }
 })

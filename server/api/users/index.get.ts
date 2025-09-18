@@ -1,9 +1,9 @@
+import User from '~/server/models/User'
+import { createUserFilterConfig } from '~/server/utils/filter_config/userManagement'
 import { extractTokenFromHeader, verifyToken } from '~/server/utils/jwt'
 import { connectMongoDB } from '~/server/utils/mongodb'
-import User from '~/server/models/User'
-import { createPredefinedError, createSuccessResponseWithMessages } from '~/server/utils/responseHandler'
-import { createUserFilterConfig } from '~/server/utils/filter_config/userManagement'
 import { parseQueryAndBuildFilter } from '~/server/utils/queryParser'
+import { API_RESPONSE_CODES, createPaginatedResponse, createPredefinedError } from '~/server/utils/responseHandler'
 
 export default defineEventHandler(async (event) => {
   await connectMongoDB()
@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
     const token = extractTokenFromHeader(authHeader)
 
     if (!token) {
-      throw createPredefinedError('UNAUTHORIZED')
+      throw createPredefinedError(API_RESPONSE_CODES.UNAUTHORIZED)
     }
 
     // Verify and decode token
@@ -24,25 +24,25 @@ export default defineEventHandler(async (event) => {
     const currentUser = await User.findById(decoded.userId)
 
     if (!currentUser || !currentUser.isActive) {
-      throw createPredefinedError('UNAUTHORIZED')
+      throw createPredefinedError(API_RESPONSE_CODES.UNAUTHORIZED)
     }
 
     // Check if user has permission to view users (admin)
     if (currentUser.role !== 'admin') {
-      throw createPredefinedError('FORBIDDEN')
+      throw createPredefinedError(API_RESPONSE_CODES.FORBIDDEN)
     }
 
     const query: any = getQuery(event)
-    
+
     // Parse query and build MongoDB filter using global utilities
     const { parsedQuery, mongoFilter } = parseQueryAndBuildFilter(
-      query, 
+      query,
       createUserFilterConfig()
     )
-    
+
     const { page, limit } = parsedQuery.pagination
     let filter = mongoFilter
-    
+
     // Handle ObjectId conversion for roles field
     if (filter.roles && typeof filter.roles === 'string') {
       try {
@@ -93,14 +93,11 @@ export default defineEventHandler(async (event) => {
       })) : []
     }))
 
-    return createSuccessResponseWithMessages({
-      data: transformedUsers,
-      pagination: {
-        page,
-        limit,
-        total,
-        pages: Math.ceil(total / limit)
-      }
+    return createPaginatedResponse(transformedUsers, {
+      page,
+      limit,
+      total,
+      pages: Math.ceil(total / limit)
     })
   } catch (error: any) {
     // If it's already a createError, throw it as is
@@ -109,13 +106,13 @@ export default defineEventHandler(async (event) => {
     }
 
     // Handle JWT errors
-    if (error.message === 'Invalid or expired token') {
-      throw createPredefinedError('TOKEN_EXPIRED')
+    if (error.message === API_RESPONSE_CODES.INVALID_OR_EXPIRED_TOKEN) {
+      throw createPredefinedError(API_RESPONSE_CODES.TOKEN_EXPIRED)
     }
 
     // Log unexpected errors
     console.error('Get users error:', error)
 
-    throw createPredefinedError('INTERNAL_ERROR')
+    throw createPredefinedError(API_RESPONSE_CODES.INTERNAL_ERROR)
   }
 })

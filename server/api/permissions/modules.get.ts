@@ -1,6 +1,6 @@
-import { connectMongoDB } from '~/server/utils/mongodb'
 import Permission from '~/server/models/Permission'
-import { createPredefinedError, createSuccessResponseWithMessages } from '~/server/utils/responseHandler'
+import { connectMongoDB } from '~/server/utils/mongodb'
+import { API_RESPONSE_CODES, createPredefinedError, createSuccessResponse } from '~/server/utils/responseHandler'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -9,9 +9,7 @@ export default defineEventHandler(async (event) => {
     // Get unique modules
     const modules = await Permission.distinct('module', { isActive: true })
 
-    return createSuccessResponseWithMessages({
-      data: modules.sort()
-    })
+    return createSuccessResponse(modules.sort())
   } catch (error: any) {
     // If it's already a createError, throw it as is
     if (error.statusCode) {
@@ -19,11 +17,11 @@ export default defineEventHandler(async (event) => {
     }
 
     // Handle JWT errors
-    if (error.message === 'Invalid or expired token') {
-      throw createPredefinedError('TOKEN_EXPIRED')
+    if (error.message === API_RESPONSE_CODES.INVALID_OR_EXPIRED_TOKEN) {
+      throw createPredefinedError(API_RESPONSE_CODES.TOKEN_EXPIRED)
     }
 
     // Log unexpected errors
-    throw createPredefinedError('INTERNAL_ERROR')
+    throw createPredefinedError(API_RESPONSE_CODES.INTERNAL_ERROR)
   }
 })

@@ -1,8 +1,8 @@
 import type { AuthLoginRequest } from '~/composables/store_models/auth'
+import User from '~/server/models/User'
 import { signToken } from '~/server/utils/jwt'
 import { connectMongoDB } from '~/server/utils/mongodb'
-import User from '~/server/models/User'
-import { createPredefinedError, createSuccessResponseWithMessages, VALIDATION_DETAILS } from '~/server/utils/responseHandler'
+import { API_RESPONSE_CODES, createPredefinedError, createSuccessResponse, VALIDATION_DETAILS } from '~/server/utils/responseHandler'
 
 export default defineEventHandler(async (event) => {
   await connectMongoDB()
@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
 
     // Validate input
     if (!email || !password) {
-      throw createPredefinedError('MISSING_REQUIRED_FIELDS', {
+      throw createPredefinedError(API_RESPONSE_CODES.MISSING_REQUIRED_FIELDS, {
         details: [VALIDATION_DETAILS.FIELD_EMAIL_REQUIRED, VALIDATION_DETAILS.FIELD_PASSWORD_REQUIRED],
       })
     }
@@ -22,19 +22,19 @@ export default defineEventHandler(async (event) => {
     const user = await User.findOne({ email }).populate('roles', 'name description permissions isActive')
 
     if (!user) {
-      throw createPredefinedError('INVALID_CREDENTIALS')
+      throw createPredefinedError(API_RESPONSE_CODES.INVALID_CREDENTIALS)
     }
 
     // Check if user is active
     if (!user.isActive) {
-      throw createPredefinedError('ACCOUNT_DEACTIVATED')
+      throw createPredefinedError(API_RESPONSE_CODES.ACCOUNT_DEACTIVATED)
     }
 
     // Verify password
     const isPasswordValid = await user.comparePassword(password)
 
     if (!isPasswordValid) {
-      throw createPredefinedError('INVALID_CREDENTIALS')
+      throw createPredefinedError(API_RESPONSE_CODES.INVALID_CREDENTIALS)
     }
 
     // Update last login
@@ -73,30 +73,28 @@ export default defineEventHandler(async (event) => {
     })
 
     // Return user data and token
-    return createSuccessResponseWithMessages({
-      data: {
-        token,
-        user: {
-          id: user._id.toString(),
-          name: user.name,
-          email: user.email,
-          role: user.role,
-          department: user.department,
-          position: user.position,
-          avatar: user.avatar,
-          roles: user.roles || []
-        }
+    return createSuccessResponse({
+      token,
+      user: {
+        id: user._id.toString(),
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        department: user.department,
+        position: user.position,
+        avatar: user.avatar,
+        roles: user.roles || []
       }
-    }, 'LOGIN_SUCCESS')
+    }, { responseType: API_RESPONSE_CODES.LOGIN_SUCCESS })
   } catch (error: any) {
     // Log unexpected errors
     console.error('Login error:', error)
-    
+
     // If it's already a createError, throw it as is
     if (error.statusCode) {
       throw error
     }
 
-    throw createPredefinedError('INTERNAL_ERROR')
+    throw createPredefinedError(API_RESPONSE_CODES.INTERNAL_ERROR)
   }
 })

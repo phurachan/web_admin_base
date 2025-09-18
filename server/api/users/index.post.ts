@@ -1,18 +1,18 @@
 import bcrypt from 'bcryptjs'
-import { connectMongoDB } from '~/server/utils/mongodb'
 import User from '~/server/models/User'
-import { createBadRequestError, createPredefinedError, createSuccessResponseWithMessages, VALIDATION_DETAILS } from '~/server/utils/responseHandler'
+import { connectMongoDB } from '~/server/utils/mongodb'
+import { API_RESPONSE_CODES, createPredefinedError, createSuccessResponse, VALIDATION_DETAILS } from '~/server/utils/responseHandler'
 
 export default defineEventHandler(async (event) => {
-  
+
   await connectMongoDB()
 
   try {
     const body = await readBody(event)
-    
+
     // Validate required fields
     if (!body.name || !body.email || !body.password) {
-      throw createPredefinedError('MISSING_REQUIRED_FIELDS', {
+      throw createPredefinedError(API_RESPONSE_CODES.MISSING_REQUIRED_FIELDS, {
         details: [VALIDATION_DETAILS.FIELD_NAME_REQUIRED, VALIDATION_DETAILS.FIELD_EMAIL_REQUIRED, VALIDATION_DETAILS.FIELD_PASSWORD_REQUIRED]
       })
     }
@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
     // Check if user already exists
     const existingUser = await User.findOne({ email: body.email })
     if (existingUser) {
-      throw createPredefinedError('USER_ALREADY_EXISTS', {
+      throw createPredefinedError(API_RESPONSE_CODES.USER_ALREADY_EXISTS, {
         details: [VALIDATION_DETAILS.USER_EMAIL_DUPLICATE]
       })
     }
@@ -66,9 +66,7 @@ export default defineEventHandler(async (event) => {
       updatedAt: savedUser.updatedAt
     }
 
-    return createSuccessResponseWithMessages({
-      data: userResponse
-    })
+    return createSuccessResponse(userResponse)
   } catch (error: any) {
     // If it's already a createError, throw it as is
     if (error.statusCode) {
@@ -76,26 +74,26 @@ export default defineEventHandler(async (event) => {
     }
 
     // Handle JWT errors
-    if (error.message === 'Invalid or expired token') {
-      throw createPredefinedError('TOKEN_EXPIRED')
+    if (error.message === API_RESPONSE_CODES.INVALID_OR_EXPIRED_TOKEN) {
+      throw createPredefinedError(API_RESPONSE_CODES.TOKEN_EXPIRED)
     }
 
     // Handle validation errors
-    if (error.name === 'ValidationError') {
+    if (error.name === API_RESPONSE_CODES.VALIDATION_ERROR_EXCEPTION_NAME) {
       console.log(error);
-      
+
       const fieldErrors = Object.keys(error.errors)
-      throw createPredefinedError('VALIDATION_ERROR', {
+      throw createPredefinedError(API_RESPONSE_CODES.VALIDATION_ERROR, {
         details: fieldErrors
       })
     }
 
     // Handle duplicate key errors
     if (error.code === 11000) {
-      throw createPredefinedError('ALREADY_EXISTS')
+      throw createPredefinedError(API_RESPONSE_CODES.ALREADY_EXISTS)
     }
 
     // Log unexpected errors
-    throw createPredefinedError('INTERNAL_ERROR')
+    throw createPredefinedError(API_RESPONSE_CODES.INTERNAL_ERROR)
   }
 })

@@ -1,8 +1,8 @@
 import bcrypt from 'bcryptjs'
+import User from '~/server/models/User'
 import { extractTokenFromHeader, verifyToken } from '~/server/utils/jwt'
 import { connectMongoDB } from '~/server/utils/mongodb'
-import User from '~/server/models/User'
-import { createPredefinedError, createSuccessResponseWithMessages, VALIDATION_DETAILS } from '~/server/utils/responseHandler'
+import { API_RESPONSE_CODES, createPredefinedError, createSuccessResponse, VALIDATION_DETAILS } from '~/server/utils/responseHandler'
 
 export default defineEventHandler(async (event) => {
   await connectMongoDB()
@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
     const token = extractTokenFromHeader(authHeader)
 
     if (!token) {
-      throw createPredefinedError('UNAUTHORIZED')
+      throw createPredefinedError(API_RESPONSE_CODES.UNAUTHORIZED)
     }
 
     // Verify and decode token
@@ -23,19 +23,19 @@ export default defineEventHandler(async (event) => {
     const currentUser = await User.findById(decoded.userId)
 
     if (!currentUser || !currentUser.isActive) {
-      throw createPredefinedError('USER_NOT_FOUND')
+      throw createPredefinedError(API_RESPONSE_CODES.USER_NOT_FOUND)
     }
 
     // Check if user has permission to update users (admin)
     if (currentUser.role !== 'admin') {
-      throw createPredefinedError('FORBIDDEN')
+      throw createPredefinedError(API_RESPONSE_CODES.FORBIDDEN)
     }
 
     // Get user ID from route params
     const userId = getRouterParam(event, 'id')
 
     if (!userId) {
-      throw createPredefinedError('INVALID_INPUT', {
+      throw createPredefinedError(API_RESPONSE_CODES.INVALID_INPUT, {
         details: [VALIDATION_DETAILS.USER_ID_INVALID]
       })
     }
@@ -74,10 +74,9 @@ export default defineEventHandler(async (event) => {
     }
 
     if (Object.keys(errors).length > 0) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'Validation failed',
-        data: { errors }
+      throw createPredefinedError(API_RESPONSE_CODES.INVALID_INPUT, {
+        details: ['email'],
+        errors
       })
     }
 
@@ -85,9 +84,8 @@ export default defineEventHandler(async (event) => {
     const userToUpdate = await User.findById(userId)
 
     if (!userToUpdate) {
-      throw createError({
-        statusCode: 404,
-        statusMessage: 'User not found',
+      throw createPredefinedError(API_RESPONSE_CODES.NOT_FOUND, {
+        details: ['userId'],
       })
     }
 
@@ -118,7 +116,7 @@ export default defineEventHandler(async (event) => {
     ).populate('roles', 'name description isActive')
 
     if (!updatedUser) {
-      throw createPredefinedError('USER_NOT_FOUND')
+      throw createPredefinedError(API_RESPONSE_CODES.USER_NOT_FOUND)
     }
 
     // Transform user data for response
@@ -136,9 +134,7 @@ export default defineEventHandler(async (event) => {
       roles: updatedUser.roles || []
     }
 
-    return createSuccessResponseWithMessages({
-      data: transformedUser
-    })
+    return createSuccessResponse(transformedUser)
 
   } catch (error: any) {
     // If it's already a createError, throw it as is
@@ -147,29 +143,29 @@ export default defineEventHandler(async (event) => {
     }
 
     // Handle JWT errors
-    if (error.message === 'Invalid or expired token') {
-      throw createPredefinedError('TOKEN_EXPIRED')
+    if (error.message === API_RESPONSE_CODES.INVALID_OR_EXPIRED_TOKEN) {
+      throw createPredefinedError(API_RESPONSE_CODES.TOKEN_EXPIRED)
     }
 
     // Handle validation errors
-    if (error.name === 'ValidationError') {
+    if (error.name === API_RESPONSE_CODES.VALIDATION_ERROR_EXCEPTION_NAME) {
       const errors: Record<string, string> = {}
       for (const field in error.errors) {
         errors[field] = error.errors[field].message
       }
-      throw createPredefinedError('VALIDATION_ERROR', {
+      throw createPredefinedError(API_RESPONSE_CODES.VALIDATION_ERROR, {
         details: errors
       })
     }
 
     // Handle duplicate key errors
     if (error.code === 11000) {
-      throw createPredefinedError('ALREADY_EXISTS')
+      throw createPredefinedError(API_RESPONSE_CODES.ALREADY_EXISTS)
     }
 
     // Log unexpected errors
     console.error('Update user error:', error)
 
-    throw createPredefinedError('INTERNAL_ERROR')
+    throw createPredefinedError(API_RESPONSE_CODES.INTERNAL_ERROR)
   }
 })

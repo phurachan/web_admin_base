@@ -1952,14 +1952,14 @@ export const VALIDATION_DETAILS = {
 
 **Before:**
 ```javascript
-throw createPredefinedError('MISSING_REQUIRED_FIELDS', {
+throw createPredefinedError(API_RESPONSE_CODES.MISSING_REQUIRED_FIELDS, {
   details: ['email', 'password']
 })
 ```
 
 **After:**
 ```javascript
-throw createPredefinedError('MISSING_REQUIRED_FIELDS', {
+throw createPredefinedError(API_RESPONSE_CODES.MISSING_REQUIRED_FIELDS, {
   details: [VALIDATION_DETAILS.FIELD_EMAIL_REQUIRED, VALIDATION_DETAILS.FIELD_PASSWORD_REQUIRED]
 })
 ```

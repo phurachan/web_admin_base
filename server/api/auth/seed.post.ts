@@ -1,7 +1,7 @@
-import { connectMongoDB } from '~/server/utils/mongodb'
 import Role from '~/server/models/Role'
 import User from '~/server/models/User'
-import { createPredefinedError, createSuccessResponseWithMessages } from '~/server/utils/responseHandler'
+import { connectMongoDB } from '~/server/utils/mongodb'
+import { API_RESPONSE_CODES, createPredefinedError, createSuccessResponse } from '~/server/utils/responseHandler'
 
 export default defineEventHandler(async (event) => {
   await connectMongoDB()
@@ -11,10 +11,8 @@ export default defineEventHandler(async (event) => {
     const existingUsersCount = await User.countDocuments()
 
     if (existingUsersCount > 0) {
-      return createSuccessResponseWithMessages({
-        data: {
-          count: existingUsersCount
-        }
+      return createSuccessResponse({
+        count: existingUsersCount
       })
     }
 
@@ -49,23 +47,21 @@ export default defineEventHandler(async (event) => {
       createdUsers.push(user)
     }
 
-    return createSuccessResponseWithMessages({
-      data: {
-        count: createdUsers.length,
-        users: createdUsers.map(user => ({
-          id: user._id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-          department: user.department,
-          position: user.position
-        }))
-      }
+    return createSuccessResponse({
+      count: createdUsers.length,
+      users: createdUsers.map(user => ({
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        department: user.department,
+        position: user.position
+      }))
     })
   } catch (error: any) {
     // Log unexpected errors
     console.error('Seed users error:', error)
 
-    throw createPredefinedError('INTERNAL_ERROR')
+    throw createPredefinedError(API_RESPONSE_CODES.INTERNAL_ERROR)
   }
 })

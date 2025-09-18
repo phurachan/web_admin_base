@@ -1,7 +1,7 @@
 import Permission from '~/server/models/Permission'
 import Role from '~/server/models/Role'
 import { connectMongoDB } from '~/server/utils/mongodb'
-import { createPredefinedError, createSuccessResponseWithMessages, VALIDATION_DETAILS } from '~/server/utils/responseHandler'
+import { API_RESPONSE_CODES, createPredefinedError, createSuccessResponse, VALIDATION_DETAILS } from '~/server/utils/responseHandler'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
     const id = getRouterParam(event, 'id')
 
     if (!id) {
-      throw createPredefinedError('MISSING_REQUIRED_FIELDS', {
+      throw createPredefinedError(API_RESPONSE_CODES.MISSING_REQUIRED_FIELDS, {
         details: [VALIDATION_DETAILS.INVALID_PERMISSION_ID]
       })
     }
@@ -18,19 +18,19 @@ export default defineEventHandler(async (event) => {
     // Check if permission exists
     const permission = await Permission.findById(id)
     if (!permission) {
-      throw createPredefinedError('NOT_FOUND')
+      throw createPredefinedError(API_RESPONSE_CODES.NOT_FOUND)
     }
 
     // Check if permission is assigned to any roles
     const rolesWithPermission = await Role.countDocuments({ permissions: permission.name })
     if (rolesWithPermission > 0) {
-      throw createPredefinedError('DATA_USED')
+      throw createPredefinedError(API_RESPONSE_CODES.DATA_USED)
     }
 
     // Delete the permission
     await Permission.findByIdAndDelete(id)
 
-    return createSuccessResponseWithMessages({})
+    return createSuccessResponse({})
   } catch (error: any) {
     console.error('Error deleting permission:', error)
     if (error.statusCode) {
@@ -38,10 +38,10 @@ export default defineEventHandler(async (event) => {
     }
 
     // Handle JWT errors
-    if (error.message === 'Invalid or expired token') {
-      throw createPredefinedError('TOKEN_EXPIRED')
+    if (error.message === API_RESPONSE_CODES.INVALID_OR_EXPIRED_TOKEN) {
+      throw createPredefinedError(API_RESPONSE_CODES.TOKEN_EXPIRED)
     }
 
-    throw createPredefinedError('INTERNAL_ERROR')
+    throw createPredefinedError(API_RESPONSE_CODES.INTERNAL_ERROR)
   }
 })

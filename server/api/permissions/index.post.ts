@@ -1,6 +1,6 @@
 import Permission from '~/server/models/Permission'
 import { connectMongoDB } from '~/server/utils/mongodb'
-import { createPredefinedError, createSuccessResponseWithMessages } from '~/server/utils/responseHandler'
+import { API_RESPONSE_CODES, createPredefinedError, createSuccessResponse } from '~/server/utils/responseHandler'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -11,18 +11,16 @@ export default defineEventHandler(async (event) => {
 
     // Validate required fields
     if (!name || !description || !module || !action || !resource) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'Name, description, module, action, and resource are required'
+      throw createPredefinedError(API_RESPONSE_CODES.INVALID_INPUT, {
+        details: ['name', 'description', 'module', 'action', 'resource']
       })
     }
 
     // Check if permission already exists
     const existingPermission = await Permission.findOne({ name })
     if (existingPermission) {
-      throw createError({
-        statusCode: 409,
-        statusMessage: 'Permission with this name already exists'
+      throw createPredefinedError(API_RESPONSE_CODES.ALREADY_EXISTS, {
+        details: ['name']
       })
     }
 
@@ -39,9 +37,7 @@ export default defineEventHandler(async (event) => {
 
     await permission.save()
 
-    return createSuccessResponseWithMessages({
-      data: permission
-    })
+    return createSuccessResponse(permission)
   } catch (error: any) {
     // If it's already a createError, throw it as is
     if (error.statusCode) {
@@ -49,24 +45,24 @@ export default defineEventHandler(async (event) => {
     }
 
     // Handle JWT errors
-    if (error.message === 'Invalid or expired token') {
-      throw createPredefinedError('TOKEN_EXPIRED')
+    if (error.message === API_RESPONSE_CODES.INVALID_OR_EXPIRED_TOKEN) {
+      throw createPredefinedError(API_RESPONSE_CODES.TOKEN_EXPIRED)
     }
 
     // Handle validation errors
-    if (error.name === 'ValidationError') {
+    if (error.name === API_RESPONSE_CODES.VALIDATION_ERROR_EXCEPTION_NAME) {
       const fieldErrors = Object.keys(error.errors)
-      throw createPredefinedError('VALIDATION_ERROR', {
+      throw createPredefinedError(API_RESPONSE_CODES.VALIDATION_ERROR, {
         details: fieldErrors
       })
     }
 
     // Handle duplicate key errors
     if (error.code === 11000) {
-      throw createPredefinedError('ALREADY_EXISTS')
+      throw createPredefinedError(API_RESPONSE_CODES.ALREADY_EXISTS)
     }
 
     // Log unexpected errors
-    throw createPredefinedError('INTERNAL_ERROR')
+    throw createPredefinedError(API_RESPONSE_CODES.INTERNAL_ERROR)
   }
 })

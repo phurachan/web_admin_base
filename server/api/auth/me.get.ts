@@ -1,7 +1,7 @@
+import User from '~/server/models/User'
 import { extractTokenFromHeader, verifyToken } from '~/server/utils/jwt'
 import { connectMongoDB } from '~/server/utils/mongodb'
-import User from '~/server/models/User'
-import { createPredefinedError } from '~/server/utils/responseHandler'
+import { API_RESPONSE_CODES, createPredefinedError } from '~/server/utils/responseHandler'
 
 export default defineEventHandler(async (event) => {
   await connectMongoDB()
@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
     const token = extractTokenFromHeader(authHeader)
 
     if (!token) {
-      throw createPredefinedError('UNAUTHORIZED')
+      throw createPredefinedError(API_RESPONSE_CODES.UNAUTHORIZED)
     }
 
     // Verify and decode token
@@ -23,23 +23,21 @@ export default defineEventHandler(async (event) => {
       .populate('roles', 'name description permissions isActive')
 
     if (!user || !user.isActive) {
-      throw createPredefinedError('USER_NOT_FOUND')
+      throw createPredefinedError(API_RESPONSE_CODES.USER_NOT_FOUND)
     }
 
     // Return user data
-    return createSuccessResponseWithMessages({
-      data: {
-        id: user._id.toString(),
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        department: user.department,
-        position: user.position,
-        avatar: user.avatar,
-        lastLogin: user.lastLogin,
-        emailVerified: user.emailVerified,
-        roles: user.roles || []
-      }
+    return createSuccessResponse({
+      id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      department: user.department,
+      position: user.position,
+      avatar: user.avatar,
+      lastLogin: user.lastLogin,
+      emailVerified: user.emailVerified,
+      roles: user.roles || []
     })
   } catch (error: any) {
     // If it's already a createError, throw it as is
@@ -48,13 +46,13 @@ export default defineEventHandler(async (event) => {
     }
 
     // Handle JWT errors
-    if (error.message === 'Invalid or expired token') {
-      throw createPredefinedError('TOKEN_EXPIRED')
+    if (error.message === API_RESPONSE_CODES.INVALID_OR_EXPIRED_TOKEN) {
+      throw createPredefinedError(API_RESPONSE_CODES.TOKEN_EXPIRED)
     }
 
     // Log unexpected errors
     console.error('Get user error:', error)
 
-    throw createPredefinedError('INTERNAL_ERROR')
+    throw createPredefinedError(API_RESPONSE_CODES.INTERNAL_ERROR)
   }
 })

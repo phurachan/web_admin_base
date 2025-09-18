@@ -1,9 +1,9 @@
 import mongoose from 'mongoose'
-import { extractTokenFromHeader, verifyToken } from '~/server/utils/jwt'
-import { connectMongoDB } from '~/server/utils/mongodb'
 import Role from '~/server/models/Role'
 import User from '~/server/models/User'
-import { createPredefinedError, createSuccessResponseWithMessages } from '~/server/utils/responseHandler'
+import { extractTokenFromHeader, verifyToken } from '~/server/utils/jwt'
+import { connectMongoDB } from '~/server/utils/mongodb'
+import { API_RESPONSE_CODES, createPredefinedError, createSuccessResponse } from '~/server/utils/responseHandler'
 
 export default defineEventHandler(async (event) => {
   await connectMongoDB()
@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
     const token = extractTokenFromHeader(authHeader)
 
     if (!token) {
-      throw createPredefinedError('UNAUTHORIZED')
+      throw createPredefinedError(API_RESPONSE_CODES.UNAUTHORIZED)
     }
 
     // Verify and decode token
@@ -24,26 +24,26 @@ export default defineEventHandler(async (event) => {
     const currentUser = await User.findById(decoded.userId)
 
     if (!currentUser || !currentUser.isActive) {
-      throw createPredefinedError('USER_NOT_FOUND')
+      throw createPredefinedError(API_RESPONSE_CODES.USER_NOT_FOUND)
     }
 
     // Check if user has permission to update user roles (admin)
     if (currentUser.role !== 'admin') {
-      throw createPredefinedError('FORBIDDEN')
+      throw createPredefinedError(API_RESPONSE_CODES.FORBIDDEN)
     }
 
     const id = getRouterParam(event, 'id')
     const body = await readBody(event)
     const { roleIds } = body
-    
+
     if (!id) {
-      throw createPredefinedError('MISSING_REQUIRED_FIELDS')
+      throw createPredefinedError(API_RESPONSE_CODES.MISSING_REQUIRED_FIELDS)
     }
 
     // Check if user exists
     const user = await User.findById(id)
     if (!user) {
-      throw createPredefinedError('USER_NOT_FOUND')
+      throw createPredefinedError(API_RESPONSE_CODES.USER_NOT_FOUND)
     }
 
     // Validate role IDs if provided
@@ -59,16 +59,14 @@ export default defineEventHandler(async (event) => {
           { new: true, runValidators: true }
         ).populate('roles', 'name description permissions isActive').lean()
 
-        return createSuccessResponseWithMessages({
-          data: updatedUser.roles || []
-        })
+        return createSuccessResponse(updatedUser.roles || [])
       }
 
       const objectIds = validRoleIds.map((id: any) => {
         if (mongoose.Types.ObjectId.isValid(id)) {
           return new mongoose.Types.ObjectId(id)
         }
-        throw createPredefinedError('INVALID_INPUT')
+        throw createPredefinedError(API_RESPONSE_CODES.INVALID_INPUT)
       })
 
       const validRoles = await Role.countDocuments({
@@ -76,7 +74,7 @@ export default defineEventHandler(async (event) => {
         isActive: true
       })
       if (validRoles !== validRoleIds.length) {
-        throw createPredefinedError('INVALID_INPUT')
+        throw createPredefinedError(API_RESPONSE_CODES.INVALID_INPUT)
       }
 
       // Update user roles with validated ObjectIds
@@ -86,9 +84,7 @@ export default defineEventHandler(async (event) => {
         { new: true, runValidators: true }
       ).populate('roles', 'name description permissions isActive').lean()
 
-      return createSuccessResponseWithMessages({
-        data: updatedUser.roles || []
-      })
+      return createSuccessResponse(updatedUser.roles || [])
     }
 
     // Update user roles (empty array if no roleIds provided)
@@ -99,9 +95,7 @@ export default defineEventHandler(async (event) => {
       { new: true, runValidators: true }
     ).populate('roles', 'name description permissions isActive').lean()
 
-    return createSuccessResponseWithMessages({
-      data: updatedUser.roles || []
-    })
+    return createSuccessResponse(updatedUser.roles || [])
   } catch (error: any) {
     // If it's already a createPredefinedError, throw it as is
     if (error.statusCode) {
@@ -109,13 +103,13 @@ export default defineEventHandler(async (event) => {
     }
 
     // Handle JWT errors
-    if (error.message === 'Invalid or expired token') {
-      throw createPredefinedError('UNAUTHORIZED')
+    if (error.message === API_RESPONSE_CODES.INVALID_OR_EXPIRED_TOKEN) {
+      throw createPredefinedError(API_RESPONSE_CODES.UNAUTHORIZED)
     }
 
     // Log unexpected errors
     console.error('Error updating user roles:', error)
 
-    throw createPredefinedError('INTERNAL_ERROR')
+    throw createPredefinedError(API_RESPONSE_CODES.INTERNAL_ERROR)
   }
 })
