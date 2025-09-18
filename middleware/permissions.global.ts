@@ -37,7 +37,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   }
   
   // Get the base path (without query parameters)
-  const basePath = to.path.split('?')[0]
+  const basePath = to.path?.split('?')[0] ?? ''
   
   // Check if route requires specific permissions
   const requiredPermissions = routePermissions[basePath]
@@ -49,7 +49,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     }
     
     // Check if user has required permissions
-    const hasRequiredPermission = requiredPermissions.some(permission => {
+    const hasRequiredPermission = requiredPermissions.some((permission: string) => {
       return hasPermission(permission)
     })
     

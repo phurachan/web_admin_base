@@ -1,5 +1,5 @@
-import Permission from '~/models/Permission'
-import { connectMongoDB } from '~/lib/mongodb'
+import Permission from '~/server/models/Permission'
+import { connectMongoDB } from '~/server/utils/mongodb'
 import { createPredefinedError, createSuccessResponseWithMessages, VALIDATION_DETAILS } from '~/server/utils/responseHandler'
 
 export default defineEventHandler(async (event) => {

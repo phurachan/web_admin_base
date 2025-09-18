@@ -1,6 +1,6 @@
-import { extractTokenFromHeader, verifyToken } from '~/lib/jwt'
-import { connectMongoDB } from '~/lib/mongodb'
-import User from '~/models/User'
+import { extractTokenFromHeader, verifyToken } from '~/server/utils/jwt'
+import { connectMongoDB } from '~/server/utils/mongodb'
+import User from '~/server/models/User'
 import { createPredefinedError, createSuccessResponseWithMessages } from '~/server/utils/responseHandler'
 
 export default defineEventHandler(async (event) => {

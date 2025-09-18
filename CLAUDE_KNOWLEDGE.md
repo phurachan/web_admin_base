@@ -508,20 +508,20 @@ await upload('/files', files, { category: 'docs' }) // File upload
 ### Database & Models Architecture
 **Purpose**: Replace JSONPlaceholder with real MongoDB-based API
 **Database**: MongoDB Atlas
-**Connection**: `/lib/mongodb.ts` with connection caching for hot reloads
+**Connection**: `/server/utils/server/utils/mongodb.ts` with connection caching for hot reloads
 
 ### Models Created:
-- **User Model** (`/models/User.ts`):
+- **User Model** (`/server/models/User.ts`):
   - Fields: name, email, role, department, position, phone, website, avatar, isActive
   - Validation: Email format, unique email, required fields
   - Indexes: email, isActive, role, text search on name/email
   - Soft delete support (isActive field)
 
-- **Role Model** (`/models/Role.ts`):
+- **Role Model** (`/server/models/Role.ts`):
   - Fields: name, description, permissions[], isActive
   - Relations: References Permission model
   
-- **Permission Model** (`/models/Permission.ts`):
+- **Permission Model** (`/server/models/Permission.ts`):
   - Fields: name, description, module, action, resource, isActive
   - Actions: create, read, update, delete, manage
 
@@ -588,7 +588,7 @@ NUXT_PUBLIC_API_BASE=http://localhost:3000/api
 ## Complete User Management System Implementation (Latest Development)
 
 ### **Models Implemented**
-- **Enhanced User Model** (`/models/User.ts`):
+- **Enhanced User Model** (`/server/models/User.ts`):
   - Password hashing with bcryptjs (cost 12)
   - JWT authentication support
   - Dual role system (basic + advanced roles)
@@ -597,21 +597,21 @@ NUXT_PUBLIC_API_BASE=http://localhost:3000/api
   - Last login tracking
   - Methods: comparePassword(), createPasswordResetToken(), findByEmail()
   
-- **Role Model** (`/models/Role.ts`):
+- **Role Model** (`/server/models/Role.ts`):
   - Role-based access control (RBAC)
   - Permission arrays as strings
   - Created by tracking
   - Active/inactive status
   
-- **Permission Model** (`/models/Permission.ts`):
+- **Permission Model** (`/server/models/Permission.ts`):
   - Granular permission structure: module.action.resource
   - Extended actions: create, read, update, delete, access, hr_view, approve, reject, balance_manage, export, submit, reports
   - Module-based organization
 
 ### **Authentication System**
-- **JWT Library** (`/lib/jwt.ts`): Token signing, verification, header extraction
-- **MongoDB Connection** (`/lib/mongodb.ts`): Connection caching with model loading
-- **Model Loading** (`/lib/loadModels.ts`): Ensures all models are registered
+- **JWT Library** (`/server/utils/jwt.ts`): Token signing, verification, header extraction
+- **MongoDB Connection** (`/server/utils/mongodb.ts`): Connection caching with model loading
+- **Model Loading** (`/server/utils/loadModels.ts`): Ensures all models are registered
 
 ### **API Endpoints**
 #### **Authentication APIs** (`/server/api/auth/`)
@@ -2076,7 +2076,7 @@ const localizedMessage = i18n.t(errorKey) // Translates to localized text
 Extended i18n standardization to Mongoose model validation messages, replacing all hardcoded validation messages in schema definitions with constant keys for complete internationalization support.
 
 ### **Validation Constants Architecture**
-**Created**: `/models/constants/validation.ts` - Centralized validation message constants for all Mongoose models
+**Created**: `/server/models/constants/validation.ts` - Centralized validation message constants for all Mongoose models
 
 #### **Constant Categories (25+ constants):**
 ```typescript
@@ -2107,7 +2107,7 @@ export const MODEL_VALIDATION_MESSAGES = {
 
 ### **Model Updates Summary**
 
-#### **User Model (`/models/User.ts`)**
+#### **User Model (`/server/models/User.ts`)**
 **Validation messages replaced:**
 - `required: [true, 'Name is required']` → `required: [true, MODEL_VALIDATION_MESSAGES.USER_NAME_REQUIRED]`
 - `maxlength: [100, 'Name cannot be more than 100 characters']` → `maxlength: [100, MODEL_VALIDATION_MESSAGES.USER_NAME_MAX_LENGTH]`
@@ -2118,7 +2118,7 @@ export const MODEL_VALIDATION_MESSAGES = {
 - name, email, password, role (required fields)
 - department, position, phone, website (length validations)
 
-#### **Role Model (`/models/Role.ts`)**
+#### **Role Model (`/server/models/Role.ts`)**
 **Validation messages replaced:**
 - `required: [true, 'Role name is required']` → `required: [true, MODEL_VALIDATION_MESSAGES.ROLE_NAME_REQUIRED]`
 - `maxlength: [50, 'Role name cannot be more than 50 characters']` → `maxlength: [50, MODEL_VALIDATION_MESSAGES.ROLE_NAME_MAX_LENGTH]`
@@ -2127,7 +2127,7 @@ export const MODEL_VALIDATION_MESSAGES = {
 - name (required + length)
 - description (required + length)
 
-#### **Permission Model (`/models/Permission.ts`)**
+#### **Permission Model (`/server/models/Permission.ts`)**
 **Validation messages replaced:**
 - All required field validations for name, description, module, action, resource, type
 - All maxlength validations for name (100), description (200), module (50), resource (50)
@@ -2270,17 +2270,17 @@ toJSON: {
 ```
 
 ### **Files Updated**
-#### **User Model (`/models/User.ts`)**
+#### **User Model (`/server/models/User.ts`)**
 - **Fixed**: `_id`, `__v`, `password`, `passwordResetToken`, `passwordResetExpires`, `emailVerificationToken` removal
 - **Method**: Destructuring with sensitive field exclusion
 - **Result**: Clean JSON output without sensitive data
 
-#### **Role Model (`/models/Role.ts`)**
+#### **Role Model (`/server/models/Role.ts`)**
 - **Fixed**: `_id`, `__v` removal with `toString()` conversion
 - **Method**: Destructuring pattern
 - **Result**: Clean JSON with string ID conversion
 
-#### **Permission Model (`/models/Permission.ts`)**
+#### **Permission Model (`/server/models/Permission.ts`)**
 - **Fixed**: `_id`, `__v` removal with `toString()` conversion
 - **Method**: Destructuring pattern
 - **Result**: Clean JSON with string ID conversion

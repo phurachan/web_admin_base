@@ -52,5 +52,10 @@ export default defineNuxtConfig({
     public: {
       apiBase: '/api'
     }
+  },
+  vite: {
+    build: {
+      chunkSizeWarningLimit: 1000,
+    }
   }
 })

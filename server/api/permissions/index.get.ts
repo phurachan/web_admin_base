@@ -1,5 +1,5 @@
-import Permission from '~/models/Permission'
-import { connectMongoDB } from '~/lib/mongodb'
+import Permission from '~/server/models/Permission'
+import { connectMongoDB } from '~/server/utils/mongodb'
 import { createPredefinedError, createSuccessResponseWithMessages } from '~/server/utils/responseHandler'
 import { createPermissionFilterConfig } from '~/server/utils/filter_config/userManagement'
 import { parseQueryAndBuildFilter } from '~/server/utils/queryParser'
