@@ -15,7 +15,7 @@
       "description": "Development server"
     },
     {
-      "url": "https://your-domain.com/api",
+      "url": "https://web-admin-base.vercel.app/api",
       "description": "Production server"
     }
   ],
