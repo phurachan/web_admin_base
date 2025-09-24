@@ -85,7 +85,7 @@
             </div>
 
             <!-- Language Switcher -->
-            <LanguageSwitcher />
+            <BaseLanguageSwitcher />
 
             <!-- Theme Toggle -->
             <BaseThemeToggle
@@ -219,10 +219,10 @@
       </Teleport>
 
       <!-- Toast Container -->
-      <ToastContainer />
+      <BaseToastContainer />
       
       <!-- Confirm Container -->
-      <ConfirmContainer />
+      <BaseConfirmContainer />
     </div>
   </ClientOnly>
 </template>

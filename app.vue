@@ -13,7 +13,7 @@
     />
 
     <!-- Global Alert Component -->
-    <GlobalAlert />
+    <BaseGlobalAlert />
   </div>
 </template>
 

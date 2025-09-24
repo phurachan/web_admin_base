@@ -137,7 +137,7 @@
               <div class="text-xs space-y-1">
                 <div><code>dateToThai(new Date())</code> → "6 ก.ย. 2568"</div>
                 <div><code>dateToThai(date, {format: 'full'})</code></div>
-                <div><code>$formatDate.dateToThai(date)</code> (in template)</div>
+                <div><code>dateToThai(date)</code> (in template)</div>
               </div>
             </div>
           </div>
@@ -230,7 +230,7 @@
             <pre data-prefix="12"><code>// File size: 1.5 กิกะไบต์</code></pre>
             <pre data-prefix="13"><code>formatFileSize(1610612736)</code></pre>
             <pre data-prefix="14"><code></code></pre>
-            <pre data-prefix="15"><code>// Template: { { $formatNumber.formatWithCommas(price, 2) } }</code></pre>
+            <pre data-prefix="15"><code>// Template: { { formatWithCommas(price, 2) } }</code></pre>
           </div>
         </div>
       </div>
@@ -255,13 +255,13 @@
           </h3>
           <div class="mockup-code text-sm">
             <pre data-prefix="1"><code>&lt;!-- Date formatting in templates --&gt;</code></pre>
-            <pre data-prefix="2"><code>&lt;p&gt;{ { $formatDate.dateToThai(createdAt) } }&lt;/p&gt;</code></pre>
-            <pre data-prefix="3"><code>&lt;p&gt;{ { $formatDate.getCurrentThaiDate() } }&lt;/p&gt;</code></pre>
+            <pre data-prefix="2"><code>&lt;p&gt;{ { dateToThai(createdAt) } }&lt;/p&gt;</code></pre>
+            <pre data-prefix="3"><code>&lt;p&gt;{ { getCurrentThaiDate() } }&lt;/p&gt;</code></pre>
             <pre data-prefix="4"><code></code></pre>
             <pre data-prefix="5"><code>&lt;!-- Number formatting in templates --&gt;</code></pre>
-            <pre data-prefix="6"><code>&lt;p&gt;{ { $formatNumber.formatWithCommas(price) } }&lt;/p&gt;</code></pre>
-            <pre data-prefix="7"><code>&lt;p&gt;{ { $formatNumber.formatCurrency(amount) } }&lt;/p&gt;</code></pre>
-            <pre data-prefix="8"><code>&lt;p&gt;{ { $formatNumber.numberToThai(count) } }&lt;/p&gt;</code></pre>
+            <pre data-prefix="6"><code>&lt;p&gt;{ { formatWithCommas(price) } }&lt;/p&gt;</code></pre>
+            <pre data-prefix="7"><code>&lt;p&gt;{ { formatCurrency(amount) } }&lt;/p&gt;</code></pre>
+            <pre data-prefix="8"><code>&lt;p&gt;{ { numberToThai(count) } }&lt;/p&gt;</code></pre>
           </div>
         </div>
 

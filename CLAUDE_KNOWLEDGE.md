@@ -8,9 +8,9 @@ This is a Nuxt 4.1.1 admin panel project using TailwindCSS 3.x and DaisyUI 5.1.6
 - **Styling**: TailwindCSS 3.4.17 + DaisyUI 5.1.6 + @nuxtjs/tailwindcss 6.12.4
 - **Icons**: @heroicons/vue 2.2.0
 - **Date Picker**: @vuepic/vue-datepicker 11.0.2 (Vue 3 Datepicker library)
-- **State Management**: Pinia 3.0.3 + @pinia/nuxt 0.11.2 + @pinia-plugin-persistedstate/nuxt 1.2.1
+- **State Management**: Pinia 3.0.3 + @pinia/nuxt 0.11.2 + pinia-plugin-persistedstate 4.5.0
 - **Language**: TypeScript 5.9.2
-- **Package Manager**: Yarn (npm failed with native binding errors)
+- **Package Manager**: npm (consistent with other projects)
 - **Node Version**: 22.17.0 (Nuxt 4 requires Node 22+, not 18.18.0)
 
 ### Setup Issues Resolved
@@ -24,6 +24,28 @@ This is a Nuxt 4.1.1 admin panel project using TailwindCSS 3.x and DaisyUI 5.1.6
 4. **CSS Module Resolution**: CSS import errors in nuxt.config.ts → @nuxtjs/tailwindcss handles it automatically
 5. **SSR Window Issues**: window.innerWidth errors → Added `typeof window !== 'undefined'` checks
 6. **Web Components Integration**: Cally calendar components needed Vue compiler config → Added `isCustomElement` for `calendar-*` tags (Note: Currently using @vuepic/vue-datepicker instead of Cally)
+7. **Pinia Persistence**: `@pinia-plugin-persistedstate/nuxt` is deprecated → Migrated to `pinia-plugin-persistedstate` with manual plugin setup
+
+### Modern Pinia Persistence Setup
+Since `@pinia-plugin-persistedstate/nuxt` is deprecated, we use modern setup:
+
+```typescript
+// plugins/pinia.client.ts
+import { createPersistedState } from 'pinia-plugin-persistedstate'
+
+export default defineNuxtPlugin(nuxtApp => {
+  const pinia = nuxtApp.$pinia as any
+  pinia.use(createPersistedState({
+    storage: localStorage
+  }))
+})
+```
+
+**Benefits:**
+- ✅ No deprecated warnings
+- ✅ Better TypeScript support
+- ✅ Works with fresh installs
+- ✅ Future-proof maintenance
 
 ## Directory Structure & Project Evolution
 
@@ -194,14 +216,14 @@ This is a Nuxt 4.1.1 admin panel project using TailwindCSS 3.x and DaisyUI 5.1.6
 - **Context**: TypeScript dependency was missing, added as devDependency
 
 ## Commands & Environment
-- **Dev Server**: `nvm use 22.17 && yarn dev`
-- **Install Dependencies**: `nvm use 22.17 && yarn install`
-- **Build**: `nvm use 22.17 && yarn build`
+- **Dev Server**: `nvm use 22.17 && npm run dev`
+- **Install Dependencies**: `nvm use 22.17 && npm install`
+- **Build**: `nvm use 22.17 && npm run build`
 
 ### Port Management Rules
 - **User Port**: 3000 (user always runs on this port)
-- **Claude Port**: 3001 (Claude should always use `PORT=3001 nvm use 22.17 && yarn dev`)
-- **Background Tasks**: Only one yarn dev background task should run at a time
+- **Claude Port**: 3001 (Claude should always use `PORT=3001 nvm use 22.17 && npm run dev`)
+- **Background Tasks**: Only one npm run dev background task should run at a time
 - **Task Management**: Always kill background tasks when testing/verification is complete
 - **Port**: Usually 3000, but may use 3001 if 3000 is occupied
 
@@ -1879,7 +1901,7 @@ Implemented comprehensive Swagger/OpenAPI documentation for the complete API sys
 ### **Usage Instructions**
 ```bash
 # Start development server
-yarn dev
+npm run dev
 
 # Access Swagger UI
 http://localhost:3000/api/docs
