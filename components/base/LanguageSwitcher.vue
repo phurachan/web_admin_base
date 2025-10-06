@@ -5,7 +5,7 @@
       <span class="hidden sm:inline">{{ currentLocale?.name }}</span>
       <BaseIcon name="chevron-down" size="xs" />
     </div>
-    <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-[1] w-40 p-2 shadow">
+    <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-[9999] w-40 p-2 shadow">
       <li v-for="localeItem in availableLocales" :key="localeItem.code">
         <a @click="switchLanguage(localeItem.code)" :class="{ 'active': localeItem.code === locale }">
           <span>{{ localeItem.name }}</span>
