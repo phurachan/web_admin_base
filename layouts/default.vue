@@ -34,10 +34,6 @@
 
           <!-- Right side actions -->
           <div class="navbar-end gap-2">
-            <!-- Search -->
-            <div class="form-control hidden md:flex">
-              <input type="text" placeholder="Search..." class="input input-bordered input-sm w-24 md:w-auto" />
-            </div>
 
             <!-- Notifications dropdown -->
             <div class="dropdown dropdown-end">
@@ -96,12 +92,12 @@
             />
 
             <!-- User profile dropdown -->
-            <div class="dropdown dropdown-end">
+            <div class="dropdown dropdown-end pr-2">
               <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
                 <BaseAvatar
-                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                  name="Admin User"
-                  alt="Admin Profile"
+                  :src="authStore.user?.avatar"
+                  :name="authStore.user?.name || 'User'"
+                  :alt="authStore.user?.name || 'User Profile'"
                   ring
                   ring-color="ring-primary"
                   clickable
@@ -112,13 +108,13 @@
                 <li class="menu-title">
                   <div class="flex items-center gap-2">
                     <BaseAvatar
-                      src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                      name="Admin User"
+                      :src="authStore.user?.avatar"
+                      :name="authStore.user?.name || 'User'"
                       size="sm"
                     />
                     <div>
-                      <div class="font-semibold">Admin User</div>
-                      <div class="text-xs text-base-content/70">admin@example.com</div>
+                      <div class="font-semibold">{{ authStore.user?.name || 'User' }}</div>
+                      <div class="text-xs text-base-content/70">{{ authStore.user?.email || '' }}</div>
                     </div>
                   </div>
                 </li>
@@ -250,6 +246,9 @@ const tooltipVisible = ref(false)
 const tooltipData = ref(null)
 const tooltipStyle = ref({})
 
+// Dynamic menu from permissions
+const { menuSections, fetchMenuPermissions } = useMenuPermissions()
+
 // Check if device is mobile
 const checkIsMobile = () => {
   if (typeof window !== 'undefined') {
@@ -288,67 +287,16 @@ onMounted(async () => {
   if (typeof window !== 'undefined') {
     window.addEventListener('resize', checkIsMobile)
   }
-})
 
-// Menu configuration
-const menuSections = ref([
-  {
-    title: "Dashboard",
-    icon: "chart-bar",
-    items: [
-      {
-        path: "/admin",
-        label: "Overview",
-        icon: "home",
-        activeWhen: ["/admin"]
-      }
-    ]
-  },
-  {
-    title: "Settings",
-    icon: "users",
-    items: [
-      {
-        path: "/admin/user_management",
-        label: "จัดการผู้ใช้",
-        icon: "user",
-        badge: {
-          text: "New",
-          variant: "primary"
-        }
-      },
-    ]
-  },
-  {
-    title: "Examples",
-    icon: "beaker",
-    items: [
-      {
-        path: "/admin/demo",
-        label: "Demo",
-        icon: "server",
-      },
-      {
-        path: "/admin/components",
-        label: "Components",
-        icon: "puzzle-piece",
-        badge: {
-          text: "UI",
-          variant: "info"
-        }
-      },
-      {
-        path: "/admin/i18n-test",
-        label: "i18n Test",
-        icon: "language",
-        badge: {
-          text: "Test",
-          variant: "warning"
-        }
-      }
-    ]
+  // Wait for auth initialization to complete (handled by middleware/plugin)
+  // This ensures user data is loaded before fetching menu
+  if (!authStore.hasInitialized) {
+    await authStore.initializeAuth()
   }
-])
+
+  // Fetch menu permissions from database
+  await fetchMenuPermissions()
+})
 
 // Helper function to check if route is active
 const isActiveRoute = (itemPath, activeWhen = []) => {

@@ -1,4 +1,3 @@
-import Role from '~/server/models/Role'
 import User from '~/server/models/User'
 import { connectMongoDB } from '~/server/utils/mongodb'
 import { API_RESPONSE_CODES, createPredefinedError, createSuccessResponse } from '~/server/utils/responseHandler'
@@ -16,33 +15,38 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Create default users
+    // Create default users (based on current database)
     const defaultUsers = [
       {
-        name: 'System Administrator',
+        name: 'Admin User',
         email: 'admin@moonoi.com',
         password: 'admin123',
         role: 'admin',
-        department: 'IT',
-        position: 'System Administrator',
+        department: '',
+        position: '',
+        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=admin',
         isActive: true,
-        emailVerified: true
+        emailVerified: false
+      },
+      {
+        name: 'Developer',
+        email: 'dev@moonoi.com',
+        password: 'dev123',
+        role: 'user',
+        department: '',
+        position: 'Developer',
+        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=developer',
+        isActive: true,
+        emailVerified: false
       }
     ]
-
-    // Get roles from database
-    const adminRole = await Role.findOne({ name: 'Admin' })
 
     const createdUsers = []
 
     for (const userData of defaultUsers) {
       const user = new User(userData)
-
-      // Assign appropriate roles based on user role
-      if (userData.role === 'admin' && adminRole) {
-        user.roles = [adminRole._id]
-      }
-
+      // Create user without roles first (roles will be assigned after roles are seeded)
+      user.roles = []
       await user.save()
       createdUsers.push(user)
     }

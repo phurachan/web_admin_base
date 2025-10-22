@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
 
     const id = getRouterParam(event, 'id')
     const body = await readBody(event)
-    const { name, description, module, action, resource, type, isActive } = body
+    const { code, name, description, module, moduleName, action, resource, icon, path, type, isActive } = body
 
     if (!id) {
       throw createPredefinedError(API_RESPONSE_CODES.MISSING_REQUIRED_FIELDS, {
@@ -22,21 +22,25 @@ export default defineEventHandler(async (event) => {
       throw createPredefinedError(API_RESPONSE_CODES.NOT_FOUND)
     }
 
-    // Check if name is unique (if changing name)
-    if (name && name !== existingPermission.name) {
-      const nameExists = await Permission.findOne({ name, _id: { $ne: id } })
-      if (nameExists) {
+    // Check if code is unique (if changing code)
+    if (code && code !== existingPermission.code) {
+      const codeExists = await Permission.findOne({ code, _id: { $ne: id } })
+      if (codeExists) {
         throw createPredefinedError(API_RESPONSE_CODES.ALREADY_EXISTS)
       }
     }
 
     // Update permission
     const updateData: any = {}
+    if (code !== undefined) updateData.code = code
     if (name !== undefined) updateData.name = name
     if (description !== undefined) updateData.description = description
     if (module !== undefined) updateData.module = module
+    if (moduleName !== undefined) updateData.moduleName = moduleName
     if (action !== undefined) updateData.action = action
     if (resource !== undefined) updateData.resource = resource
+    if (icon !== undefined) updateData.icon = icon
+    if (path !== undefined) updateData.path = path
     if (type !== undefined) updateData.type = type
     if (isActive !== undefined) updateData.isActive = isActive
 

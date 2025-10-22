@@ -351,6 +351,7 @@ const saveUserRoles = async () => {
     useToast().success(ALERT_TEXT.SAVE_SUCCESS.th)
 
     closeUserRolesModal()
+    fetchUsers()
   } catch (error) {
     console.error('Error saving user roles:', error)
     useToast().error(BaseResponseError.getMessageTh(error))

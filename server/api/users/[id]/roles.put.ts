@@ -57,7 +57,7 @@ export default defineEventHandler(async (event) => {
           id,
           { roles: [] },
           { new: true, runValidators: true }
-        ).populate('roles', 'name description permissions isActive').lean()
+        ).populate('roles', 'name code description permissions isActive').lean()
 
         return createSuccessResponse(updatedUser.roles || [])
       }
@@ -82,7 +82,7 @@ export default defineEventHandler(async (event) => {
         id,
         { roles: objectIds },
         { new: true, runValidators: true }
-      ).populate('roles', 'name description permissions isActive').lean()
+      ).populate('roles', 'name code description permissions isActive').lean()
 
       return createSuccessResponse(updatedUser.roles || [])
     }
@@ -93,7 +93,7 @@ export default defineEventHandler(async (event) => {
       id,
       { roles: rolesToAssign },
       { new: true, runValidators: true }
-    ).populate('roles', 'name description permissions isActive').lean()
+    ).populate('roles', 'name code description permissions isActive').lean()
 
     return createSuccessResponse(updatedUser.roles || [])
   } catch (error: any) {

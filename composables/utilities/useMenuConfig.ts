@@ -1,12 +1,13 @@
 import { usePermissions } from '~/composables/utilities/usePermissions'
 
-export interface MenuItem {
+// Legacy menu item interface (different from useMenuPermissions)
+export interface LegacyMenuItem {
   id: string
   title: string
   icon: string
   path?: string
   permissions?: string[]
-  children?: MenuItem[]
+  children?: LegacyMenuItem[]
   separator?: boolean
   badge?: {
     text: string
@@ -14,16 +15,16 @@ export interface MenuItem {
   }
 }
 
-export interface MenuSection {
+export interface LegacyMenuSection {
   title?: string
-  items: MenuItem[]
+  items: LegacyMenuItem[]
 }
 
 export const useMenuConfig = () => {
   const { hasPermission, hasAnyPermission, canAccessModule, isAdmin } = usePermissions()
 
   // Main menu configuration
-  const mainMenuConfig: MenuSection[] = [
+  const mainMenuConfig: LegacyMenuSection[] = [
     {
       title: 'Main',
       items: [
@@ -67,7 +68,7 @@ export const useMenuConfig = () => {
   ]
 
   // Filter menu items based on permissions
-  const filterMenuItems = (items: MenuItem[]): MenuItem[] => {
+  const filterMenuItems = (items: LegacyMenuItem[]): LegacyMenuItem[] => {
     return items.filter(item => {
       // Always show separators
       if (item.separator) return true
@@ -93,7 +94,7 @@ export const useMenuConfig = () => {
   }
 
   // Filter menu sections based on permissions
-  const filterMenuSections = (sections: MenuSection[]): MenuSection[] => {
+  const filterMenuSections = (sections: LegacyMenuSection[]): LegacyMenuSection[] => {
     return sections.map(section => ({
       ...section,
       items: filterMenuItems(section.items)
@@ -101,12 +102,12 @@ export const useMenuConfig = () => {
   }
 
   // Get filtered menu config
-  const getFilteredMenuConfig = (): MenuSection[] => {
+  const getFilteredMenuConfig = (): LegacyMenuSection[] => {
     return filterMenuSections(mainMenuConfig)
   }
 
   // Get menu item by ID
-  const getMenuItemById = (id: string, sections?: MenuSection[]): MenuItem | null => {
+  const getMenuItemById = (id: string, sections?: LegacyMenuSection[]): LegacyMenuItem | null => {
     const searchSections = sections || mainMenuConfig
     
     for (const section of searchSections) {
@@ -124,7 +125,7 @@ export const useMenuConfig = () => {
   }
 
   // Check if menu item is accessible
-  const isMenuItemAccessible = (item: MenuItem | null): boolean => {
+  const isMenuItemAccessible = (item: LegacyMenuItem | null): boolean => {
     if (isAdmin.value) return true
     if (!item) return false
     
@@ -136,10 +137,10 @@ export const useMenuConfig = () => {
   }
 
   // Get breadcrumbs for current path
-  const getBreadcrumbs = (currentPath: string): MenuItem[] => {
-    const breadcrumbs: MenuItem[] = []
-    
-    const findInMenu = (items: MenuItem[], path: string): boolean => {
+  const getBreadcrumbs = (currentPath: string): LegacyMenuItem[] => {
+    const breadcrumbs: LegacyMenuItem[] = []
+
+    const findInMenu = (items: LegacyMenuItem[], path: string): boolean => {
       for (const item of items) {
         if (item.path === path) {
           breadcrumbs.push(item)
@@ -173,7 +174,7 @@ export const useMenuConfig = () => {
       hiddenItems: 0
     }
     
-    const countItems = (items: MenuItem[]) => {
+    const countItems = (items: LegacyMenuItem[]) => {
       for (const item of items) {
         if (!item.separator) {
           stats.totalItems++

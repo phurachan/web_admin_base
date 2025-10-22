@@ -49,7 +49,7 @@ export default defineEventHandler(async (event) => {
     const savedUser = await newUser.save()
 
     // Populate roles if any
-    await savedUser.populate('roles', 'name description permissions isActive')
+    await savedUser.populate('roles', 'name code description permissions isActive')
 
     // Return user data without password
     const userResponse = {

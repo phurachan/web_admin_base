@@ -39,7 +39,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const user: any = await User.findById(id)
-      .populate('roles', 'name description permissions isActive')
+      .populate('roles', 'name code description permissions isActive')
       .lean()
 
     if (!user) {

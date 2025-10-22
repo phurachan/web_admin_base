@@ -88,6 +88,14 @@
         @edit="editPermission"
         @delete="deletePermission"
       >
+        <!-- Name Column with Icon -->
+        <template #name="{ row }">
+          <div class="flex items-center gap-2">
+            <BaseIcon v-if="row.icon" :name="row.icon" size="sm" class="text-primary" />
+            <span>{{ row.name }}</span>
+          </div>
+        </template>
+
         <!-- Action Column -->
         <template #action="{ row }">
           <div class="badge badge-outline">{{ row.action }}</div>
@@ -97,13 +105,13 @@
         <template #type="{ row }">
           <div class="badge" :class="{
             'badge-primary': row.type === 'menu',
-            'badge-secondary': row.type === 'action', 
+            'badge-secondary': row.type === 'action',
             'badge-accent': row.type === 'input'
           }">
             {{ row.type }}
           </div>
         </template>
-        
+
         <!-- Status Column -->
         <template #status="{ row }">
           <div class="badge" :class="row.isActive ? 'badge-success' : 'badge-error'">
@@ -128,23 +136,37 @@
         
         <div class="space-y-4">
           <BaseInput
+            v-model="permissionForm.code"
+            type="text"
+            label="Code"
+            placeholder="Permission code (e.g., user_management.create)"
+          />
+
+          <BaseInput
             v-model="permissionForm.name"
             type="text"
             label="Name"
-            placeholder="Permission name"
+            placeholder="Permission display name"
           />
-          
+
           <BaseTextarea
             v-model="permissionForm.description"
             label="Description"
             placeholder="Permission description"
           />
-          
+
           <BaseInput
             v-model="permissionForm.module"
             type="text"
-            label="Module"
-            placeholder="Module name"
+            label="Module Code"
+            placeholder="Module code (e.g., user_management)"
+          />
+
+          <BaseInput
+            v-model="permissionForm.moduleName"
+            type="text"
+            label="Module Name"
+            placeholder="Module display name"
           />
           
           <BaseSelect
@@ -173,10 +195,23 @@
           <BaseInput
             v-model="permissionForm.resource"
             type="text"
-            label="Resource"
-            placeholder="Resource name"
+            label="Resource (Optional)"
+            placeholder="Resource name (optional)"
           />
-          
+
+          <BaseIconPicker
+            v-model="permissionForm.icon"
+            label="Icon (Optional)"
+            placeholder="Select an icon"
+          />
+
+          <BaseInput
+            v-model="permissionForm.path"
+            type="text"
+            label="Path (Optional)"
+            placeholder="e.g., /admin/dashboard"
+          />
+
           <div class="form-control">
             <label class="label cursor-pointer">
               <span class="label-text text-base-content">Active</span>
@@ -216,11 +251,15 @@ const permissionActionFilter = ref('')
 const permissionTypeFilter = ref('')
 const permissionStatusFilter = ref('')
 const permissionForm = reactive({
+  code: '',
   name: '',
   description: '',
   module: '',
+  moduleName: '',
   action: '',
   resource: '',
+  icon: '',
+  path: '',
   type: 'action',
   isActive: true
 })
@@ -257,12 +296,17 @@ const moduleFilterOptions = computed(() => {
 // Table columns definition
 const permissionColumns = ref([
   {
+    key: 'code',
+    label: 'Code',
+    icon: 'hashtag'
+  },
+  {
     key: 'name',
     label: 'Name',
     icon: 'key'
   },
   {
-    key: 'module',
+    key: 'moduleName',
     label: 'Module',
     icon: 'cube'
   },
@@ -275,11 +319,6 @@ const permissionColumns = ref([
     key: 'type',
     label: 'Type',
     icon: 'tag'
-  },
-  {
-    key: 'resource',
-    label: 'Resource',
-    icon: 'server'
   },
   {
     key: 'status',
@@ -298,8 +337,8 @@ const searchPermissions = () => {
 
 const fetchAllPermissionsForOptions = async () => {
   try {
-    // Fetch all permissions without filters to populate module options
-    await permissionsStore.fetchPermissions({
+    // Fetch ALL permissions (not filtered by role) to populate module options for admin
+    await permissionsStore.fetchAllPermissions({
       query: {
         pagination: { page: 1, limit: 1000 },
         filter: { isActive: true }
@@ -312,7 +351,8 @@ const fetchAllPermissionsForOptions = async () => {
 
 const fetchPermissions = async () => {
   try {
-    await permissionsStore.fetchPermissions({
+    // Fetch ALL permissions (not filtered by role) for admin to manage permissions
+    await permissionsStore.fetchAllPermissions({
       query: {
         pagination: {
           page: pagination.currentPage.value,
@@ -329,14 +369,14 @@ const fetchPermissions = async () => {
     })
   } catch (error: any) {
     console.error('Error fetching permissions:', error)
-    
+
     // Handle authentication errors
     if (error.status === 401) {
       console.warn('Authentication required - redirecting to login')
       // The useHttpClient already handles 401 redirects to /login
       return
     }
-    
+
     useToast().error(ALERT_TEXT.LOAD_FAILED.th)
   }
 }
@@ -345,21 +385,29 @@ const openPermissionModal = (permission: any = null) => {
   editingPermission.value = permission
   if (permission) {
     Object.assign(permissionForm, {
+      code: permission.code,
       name: permission.name,
       description: permission.description,
       module: permission.module,
+      moduleName: permission.moduleName,
       action: permission.action,
       resource: permission.resource,
+      icon: permission.icon || '',
+      path: permission.path || '',
       type: permission.type || 'action',
       isActive: permission.isActive
     })
   } else {
     Object.assign(permissionForm, {
+      code: '',
       name: '',
       description: '',
       module: '',
+      moduleName: '',
       action: '',
       resource: '',
+      icon: '',
+      path: '',
       type: 'action',
       isActive: true
     })
@@ -375,11 +423,15 @@ const closePermissionModal = () => {
 const savePermission = async () => {
   try {
     const permissionData: PermissionCreateRequest = {
+      code: permissionForm.code,
       name: permissionForm.name,
       description: permissionForm.description,
       module: permissionForm.module,
+      moduleName: permissionForm.moduleName,
       action: permissionForm.action,
       resource: permissionForm.resource,
+      icon: permissionForm.icon,
+      path: permissionForm.path,
       type: permissionForm.type,
       isActive: permissionForm.isActive
     }
@@ -401,8 +453,8 @@ const savePermission = async () => {
     }
 
     closePermissionModal()
-    await fetchPermissions() // Refresh data
-    
+    await fetchPermissions()
+
     useToast().success(ALERT_TEXT.SAVE_SUCCESS.th)
   } catch (error) {
     console.error('Error saving permission:', error)

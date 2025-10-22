@@ -53,6 +53,7 @@
 
         <div class="space-y-4">
           <BaseInput v-model="roleForm.name" type="text" label="Name" placeholder="Role name" />
+          <BaseInput v-model="roleForm.code" type="text" label="Code" placeholder="Role code" />
 
           <BaseTextarea v-model="roleForm.description" label="Description" placeholder="Role description" />
 
@@ -95,10 +96,18 @@
                 </div>
                 <div class="grid grid-cols-1 gap-1">
                   <div v-for="permission in permissions" :key="permission.id" class="form-control">
-                    <label class="label cursor-pointer py-1">
-                      <span class="label-text text-base-content text-sm">{{ permission.name }}</span>
-                      <input type="checkbox" class="checkbox checkbox-sm" :value="permission.name"
-                        v-model="roleForm.permissions" />
+                    <label class="label py-1" :class="permission.code === 'dashboard.access' ? 'cursor-not-allowed' : 'cursor-pointer'">
+                      <span class="label-text text-base-content text-sm" :class="permission.code === 'dashboard.access' ? 'opacity-60' : ''">
+                        {{ permission.name }}
+                        <span v-if="permission.code === 'dashboard.access'" class="badge badge-primary badge-xs ml-2">Required</span>
+                      </span>
+                      <input
+                        type="checkbox"
+                        class="checkbox checkbox-sm"
+                        :value="permission.code"
+                        :disabled="permission.code === 'dashboard.access'"
+                        v-model="roleForm.permissions"
+                      />
                     </label>
                   </div>
                 </div>
@@ -149,6 +158,7 @@ const roleStatusFilter = ref('')
 const activePermissionTab = ref<'menu' | 'action' | 'input'>('menu')
 const roleForm = reactive({
   name: '',
+  code: '',
   description: '',
   permissions: [] as string[],
   isActive: true
@@ -166,6 +176,11 @@ const roleColumns = ref([
   {
     key: 'name',
     label: 'Name',
+    icon: 'tag'
+  },
+  {
+    key: 'code',
+    label: 'Code',
     icon: 'tag'
   },
   {
@@ -221,7 +236,7 @@ const getGroupedPermissionsByType = (type: 'menu' | 'action' | 'input') => {
 
 // Helper functions for permission management
 const selectAllPermissionsInModule = (permissions: any[]) => {
-  const permissionNames = permissions.map(p => p.name)
+  const permissionNames = permissions.map(p => p.code)
   // Add all permissions from this module if not already present
   permissionNames.forEach(permName => {
     if (!roleForm.permissions.includes(permName)) {
@@ -231,7 +246,7 @@ const selectAllPermissionsInModule = (permissions: any[]) => {
 }
 
 const deselectAllPermissionsInModule = (permissions: any[]) => {
-  const permissionNames = permissions.map(p => p.name)
+  const permissionNames = permissions.map(p => p.code)
   // Remove all permissions from this module
   roleForm.permissions = roleForm.permissions.filter(permName =>
     !permissionNames.includes(permName)
@@ -239,11 +254,11 @@ const deselectAllPermissionsInModule = (permissions: any[]) => {
 }
 
 const isAllModulePermissionsSelected = (permissions: any[]) => {
-  return permissions.every(p => roleForm.permissions.includes(p.name))
+  return permissions.every(p => roleForm.permissions.includes(p.code))
 }
 
 const isSomeModulePermissionsSelected = (permissions: any[]) => {
-  return permissions.some(p => roleForm.permissions.includes(p.name))
+  return permissions.some(p => roleForm.permissions.includes(p.code))
 }
 
 
@@ -285,8 +300,8 @@ const fetchRoles = async () => {
 const openRoleModal = async (role: any = null) => {
   editingRole.value = role
 
-  // Fetch all permissions without filters for the role modal
-  await permissionsStore.fetchPermissions({
+  // Fetch ALL permissions (not filtered by role) for admin to manage role permissions
+  await permissionsStore.fetchAllPermissions({
     query: {
       pagination: {
         page: 1,
@@ -298,6 +313,7 @@ const openRoleModal = async (role: any = null) => {
   if (role) {
     Object.assign(roleForm, {
       name: role.name,
+      code: role.code,
       description: role.description,
       permissions: Array.from(role.permissions || []),
       isActive: role.isActive
@@ -305,10 +321,16 @@ const openRoleModal = async (role: any = null) => {
   } else {
     Object.assign(roleForm, {
       name: '',
+      code: '',
       description: '',
       permissions: [],
       isActive: true
     })
+  }
+
+  // Ensure dashboard.access is always selected
+  if (!roleForm.permissions.includes('dashboard.access')) {
+    roleForm.permissions.push('dashboard.access')
   }
   showRoleModal.value = true
 }
@@ -322,6 +344,7 @@ const saveRole = async () => {
   try {
     const roleData = {
       name: roleForm.name,
+      code: roleForm.code,
       description: roleForm.description,
       permissions: roleForm.permissions,
       isActive: roleForm.isActive,

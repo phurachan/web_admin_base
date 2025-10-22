@@ -6,66 +6,100 @@ export default defineEventHandler(async (event) => {
   try {
     await connectMongoDB()
 
-    // Define initial permissions for the menu system
+    // Define initial permissions (based on current database)
     const initialPermissions = [
-      // Dashboard permissions
+      // ========================================
+      // MENU PERMISSIONS
+      // ========================================
       {
-        name: 'dashboard.access',
+        code: 'dashboard.access',
+        name: 'หน้าหลัก',
         description: 'Access to dashboard page',
         module: 'dashboard',
+        moduleName: 'หน้าหลัก',
         action: 'access',
         resource: 'dashboard',
+        icon: 'home',
+        path: '/admin',
         type: 'menu',
         isActive: true
       },
       {
-        name: 'components.access',
+        code: 'components.access',
+        name: 'Components',
         description: 'Access to components page',
         module: 'developer',
+        moduleName: 'นักพัฒนา',
         action: 'access',
-        resource: 'components',
+        resource: 'developer',
+        icon: 'stop',
+        path: '/admin/components',
+        type: 'menu',
+        isActive: true
+      },
+      {
+        code: 'demo.access',
+        name: 'Demo',
+        description: 'developer ใช้ในการทดสอบ components',
+        module: 'developer',
+        moduleName: 'นักพัฒนา',
+        action: 'access',
+        resource: 'developer',
+        icon: 'computer-desktop',
+        path: '/admin/demo',
+        type: 'menu',
+        isActive: true
+      },
+      {
+        code: 'user_management.access',
+        name: 'การจัดการสิทธิ์ผู้ใช้งาน',
+        description: 'เข้าถึงโมดูลการตั้งค่า / Access to settings module',
+        module: 'user_management',
+        moduleName: 'การจัดการสิทธิ์ผู้ใช้งาน',
+        action: 'access',
+        resource: 'user_management',
+        icon: 'wrench-screwdriver',
+        path: '/admin/user_management',
         type: 'menu',
         isActive: true
       },
 
-      // Settings permissions
+      // ========================================
+      // ACTION PERMISSIONS
+      // ========================================
       {
-        name: 'user_management.access',
-        description: 'Access module',
+        code: 'user_management.users',
+        name: 'ผู้ใช้ระบบ',
+        description: 'Assign roles to users',
         module: 'user_management',
-        action: 'access',
-        resource: 'access',
-        type: 'menu',
+        moduleName: 'การจัดการสิทธิ์ผู้ใช้งาน',
+        action: 'update',
+        resource: 'users',
+        type: 'action',
         isActive: true
       },
       {
-        name: 'user_management.roles',
-        description: 'Manage roles and permissions',
+        code: 'user_management.roles',
+        name: 'บทบาท',
+        description: 'จัดการ Role และสิทธิ์ / Manage roles and permissions',
         module: 'user_management',
+        moduleName: 'การจัดการสิทธิ์ผู้ใช้งาน',
         action: 'update',
         resource: 'roles',
         type: 'action',
         isActive: true
       },
       {
-        name: 'user_management.permissions',
-        description: 'Manage permissions',
+        code: 'user_management.permissions',
+        name: 'สิทธิ์การใช้งาน',
+        description: 'จัดการสิทธิ์ / Manage permissions',
         module: 'user_management',
+        moduleName: 'การจัดการสิทธิ์ผู้ใช้งาน',
         action: 'update',
         resource: 'permissions',
         type: 'action',
         isActive: true
-      },
-      {
-        name: 'user_management.users',
-        description: 'Assign roles to users',
-        module: 'user_management',
-        action: 'update',
-        resource: 'users',
-        type: 'action',
-        isActive: true
-      },
-
+      }
     ]
 
     // Insert permissions if they don't exist
@@ -73,7 +107,7 @@ export default defineEventHandler(async (event) => {
     let skippedCount = 0
 
     for (const permissionData of initialPermissions) {
-      const existing = await Permission.findOne({ name: permissionData.name })
+      const existing = await Permission.findOne({ code: permissionData.code })
 
       if (!existing) {
         await Permission.create(permissionData)

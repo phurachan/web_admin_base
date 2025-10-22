@@ -150,9 +150,15 @@
             "type": "string",
             "example": "64f123456789abcd12345680"
           },
+          "code": {
+            "type": "string",
+            "example": "user_management.create",
+            "description": "Unique permission code identifier"
+          },
           "name": {
             "type": "string",
-            "example": "user.create"
+            "example": "สร้างผู้ใช้ใหม่",
+            "description": "Display name for UI (Thai)"
           },
           "description": {
             "type": "string",
@@ -160,7 +166,13 @@
           },
           "module": {
             "type": "string",
-            "example": "user-management"
+            "example": "user_management",
+            "description": "Module code for grouping"
+          },
+          "moduleName": {
+            "type": "string",
+            "example": "จัดการผู้ใช้",
+            "description": "Module display name for UI (Thai)"
           },
           "action": {
             "type": "string",

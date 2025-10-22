@@ -46,6 +46,29 @@ export const usePermissionsStore = defineStore('permissions', {
       }
     },
 
+    async fetchAllPermissions(requestData: BaseRequestData<PermissionListRequest> = {}) {
+      try {
+        this.$patch(loadingState(requestData))
+
+        const httpClient = useHttpClient()
+        const response = await httpClient.get(
+          API_ENDPOINTS.PERMISSIONS.ALL,
+          requestData.query
+        )
+
+        this.$patch(successState(response))
+        this.list = [...(response?.data || [])]
+        this.pagination = { ...(response?.pagination || {}) }
+
+        return response
+      } catch (error: any) {
+        this.$patch(errorState({ ...(error || {}) }))
+        throw new BaseResponseError(error?.data || error)
+      } finally {
+        this.isLoading = false
+      }
+    },
+
     async fetchModules(requestData: BaseRequestData = {}) {
       try {
         this.$patch(loadingState(requestData))

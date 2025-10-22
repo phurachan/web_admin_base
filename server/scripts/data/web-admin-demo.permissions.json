@@ -1,0 +1,155 @@
+[{
+  "_id": {
+    "$oid": "68bd62822db2a5aed0cf5274"
+  },
+  "name": "การจัดการสิทธิ์ผู้ใช้งาน",
+  "description": "เข้าถึงโมดูลการตั้งค่า / Access to settings module",
+  "module": "user_management",
+  "action": "access",
+  "resource": "user_management",
+  "isActive": true,
+  "createdAt": {
+    "$date": "2025-09-07T10:46:26.709Z"
+  },
+  "updatedAt": {
+    "$date": "2025-10-22T02:55:16.641Z"
+  },
+  "__v": 0,
+  "type": "menu",
+  "code": "user_management.access",
+  "moduleName": "การจัดการสิทธิ์ผู้ใช้งาน",
+  "icon": "wrench-screwdriver",
+  "path": "/admin/user_management"
+},
+{
+  "_id": {
+    "$oid": "68bd62822db2a5aed0cf5277"
+  },
+  "name": "บทบาท",
+  "description": "จัดการ Role และสิทธิ์ / Manage roles and permissions",
+  "module": "user_management",
+  "action": "update",
+  "resource": "roles",
+  "isActive": true,
+  "createdAt": {
+    "$date": "2025-09-07T10:46:26.793Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-10T16:55:39.808Z"
+  },
+  "__v": 0,
+  "type": "action",
+  "code": "user_management.roles",
+  "moduleName": "การจัดการสิทธิ์ผู้ใช้งาน"
+},
+{
+  "_id": {
+    "$oid": "68bd62822db2a5aed0cf527a"
+  },
+  "name": "สิทธิ์การใช้งาน",
+  "description": "จัดการสิทธิ์ / Manage permissions",
+  "module": "user_management",
+  "action": "update",
+  "resource": "permissions",
+  "isActive": true,
+  "createdAt": {
+    "$date": "2025-09-07T10:46:26.877Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-10T16:55:39.856Z"
+  },
+  "__v": 0,
+  "type": "action",
+  "code": "user_management.permissions",
+  "moduleName": "การจัดการสิทธิ์ผู้ใช้งาน"
+},
+{
+  "_id": {
+    "$oid": "68c0e4153a6f9959d5f23f28"
+  },
+  "name": "ผู้ใช้ระบบ",
+  "description": "Assign roles to users",
+  "module": "user_management",
+  "action": "update",
+  "resource": "users",
+  "isActive": true,
+  "createdAt": {
+    "$date": "2025-09-10T02:36:05.675Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-10T16:55:39.902Z"
+  },
+  "__v": 0,
+  "type": "action",
+  "code": "user_management.users",
+  "moduleName": "การจัดการสิทธิ์ผู้ใช้งาน"
+},
+{
+  "_id": {
+    "$oid": "68c1aceffd53bc7c5cdbf8c4"
+  },
+  "name": "หน้าหลัก",
+  "description": "Access to dashboard page",
+  "module": "dashboard",
+  "action": "access",
+  "resource": "dashboard",
+  "type": "menu",
+  "isActive": true,
+  "createdAt": {
+    "$date": "2025-09-10T16:53:03.698Z"
+  },
+  "updatedAt": {
+    "$date": "2025-10-22T02:56:26.911Z"
+  },
+  "__v": 0,
+  "code": "dashboard.access",
+  "moduleName": "หน้าหลัก",
+  "icon": "home",
+  "path": "/admin"
+},
+{
+  "_id": {
+    "$oid": "68c1aceffd53bc7c5cdbf8c9"
+  },
+  "name": "Components",
+  "description": "Access to components page",
+  "module": "developer",
+  "action": "access",
+  "resource": "developer",
+  "type": "menu",
+  "isActive": true,
+  "createdAt": {
+    "$date": "2025-09-10T16:53:03.897Z"
+  },
+  "updatedAt": {
+    "$date": "2025-10-22T02:54:53.298Z"
+  },
+  "__v": 0,
+  "code": "components.access",
+  "moduleName": "นักพัฒนา",
+  "icon": "stop",
+  "path": "/admin/components"
+},
+{
+  "_id": {
+    "$oid": "68f75fba3b4488a730e221f5"
+  },
+  "code": "demo.access",
+  "name": "Demo",
+  "description": "developer ใช้ในการทดสอบ components",
+  "module": "developer",
+  "moduleName": "นักพัฒนา",
+  "action": "access",
+  "resource": "developer",
+  "type": "menu",
+  "isActive": true,
+  "createdAt": {
+    "$date": "2025-10-21T10:26:02.306Z"
+  },
+  "updatedAt": {
+    "$date": "2025-10-22T02:55:04.547Z"
+  },
+  "__v": 0,
+  "icon": "computer-desktop",
+  "path": "/admin/demo"
+}]

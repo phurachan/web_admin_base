@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
 
     const id = getRouterParam(event, 'id')
     const body = await readBody(event)
-    const { name, description, permissions, isActive } = body
+    const { name, code, description, permissions, isActive } = body
 
     if (!id) {
       throw createPredefinedError(API_RESPONSE_CODES.MISSING_REQUIRED_FIELDS, {
@@ -48,16 +48,19 @@ export default defineEventHandler(async (event) => {
     }
 
     // Check if name is unique (if changing name)
-    if (name && name !== existingRole.name) {
-      const nameExists = await Role.findOne({ name, _id: { $ne: id } })
+    if ((name && name !== existingRole.name) || (code && code !== existingRole.code)) {
+      const nameExists = await Role.findOne({ name, code, _id: { $ne: id } })
       if (nameExists) {
-        throw createPredefinedError(API_RESPONSE_CODES.ALREADY_EXISTS)
+        throw createPredefinedError(API_RESPONSE_CODES.ALREADY_EXISTS, {
+          details: ['name', 'code']
+        })
       }
     }
 
     // Update role
     const updateData: any = {}
     if (name !== undefined) updateData.name = name
+    if (code !== undefined) updateData.code = code
     if (description !== undefined) updateData.description = description
     if (permissions !== undefined) updateData.permissions = permissions
     if (isActive !== undefined) updateData.isActive = isActive

@@ -4,6 +4,7 @@ import { MODEL_VALIDATION_MESSAGES } from './constants/validation'
 export interface IRole extends Document {
   _id: mongoose.Types.ObjectId
   name: string
+  code: string
   description: string
   permissions: string[]
   isActive: boolean
@@ -19,6 +20,13 @@ const RoleSchema = new Schema<IRole>({
     unique: true,
     trim: true,
     maxlength: [50, MODEL_VALIDATION_MESSAGES.ROLE_NAME_MAX_LENGTH]
+  },
+  code: {
+    type: String,
+    required: [true, MODEL_VALIDATION_MESSAGES.ROLE_CODE_REQUIRED],
+    unique: true,
+    trim: true,
+    maxlength: [50, MODEL_VALIDATION_MESSAGES.ROLE_CODE_MAX_LENGTH]
   },
   description: {
     type: String,

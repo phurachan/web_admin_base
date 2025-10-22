@@ -39,7 +39,7 @@ export default defineEventHandler(async (event) => {
 
     // Find the user
     const user: any = await User.findById(userId)
-      .populate('roles', 'name description isActive')
+      .populate('roles', 'name code description isActive')
       .select('_id name email role department position avatar lastLogin emailVerified isActive roles createdAt updatedAt')
       .lean()
 

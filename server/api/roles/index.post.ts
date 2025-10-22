@@ -32,24 +32,28 @@ export default defineEventHandler(async (event) => {
     }
 
     const body = await readBody(event)
-    const { name, description, permissions, createdBy } = body
+    const { name, code, description, permissions, } = body
+    const createdBy = currentUser._id;
 
     // Validate required fields
-    if (!name || !description || !createdBy) {
+    if (!name || !code || !description || !createdBy) {
       throw createPredefinedError(API_RESPONSE_CODES.MISSING_REQUIRED_FIELDS, {
         details: [VALIDATION_DETAILS.FIELD_NAME_REQUIRED, VALIDATION_DETAILS.FIELD_DESCRIPTION_REQUIRED, VALIDATION_DETAILS.FIELD_NAME_REQUIRED]
       })
     }
 
     // Check if role already exists
-    const existingRole = await Role.findOne({ name })
+    const existingRole = await Role.findOne({ name, code })
     if (existingRole) {
-      throw createPredefinedError(API_RESPONSE_CODES.ALREADY_EXISTS)
+      throw createPredefinedError(API_RESPONSE_CODES.ALREADY_EXISTS, {
+        details: ['name', 'code']
+      })
     }
 
     // Create new role
     const role = new Role({
       name,
+      code,
       description,
       permissions: permissions || [],
       createdBy,

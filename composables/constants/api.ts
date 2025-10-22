@@ -60,7 +60,8 @@ export const API_ENDPOINTS = {
   },
 
   PERMISSIONS: {
-    LIST: '/permissions',
+    LIST: '/permissions', // Filtered by user's role
+    ALL: '/permissions/all', // All permissions (for admin)
     SHOW: (id: string) => `/permissions/${id}`,
     CREATE: '/permissions',
     UPDATE: (id: string) => `/permissions/${id}`,

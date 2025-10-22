@@ -31,11 +31,15 @@ export interface Role {
 
 export interface Permission {
   id: string
+  code: string
   name: string
   description: string
   module: string
+  moduleName: string
   action: string
-  resource: string
+  resource?: string
+  icon?: string
+  path?: string
   type: 'menu' | 'action' | 'input'
   isActive: boolean
   createdAt: Date
@@ -83,20 +87,28 @@ export interface RoleUpdateData {
 }
 
 export interface PermissionCreateData {
+  code: string
   name: string
   description: string
   module: string
+  moduleName: string
   action: string
-  resource: string
+  resource?: string
+  icon?: string
+  path?: string
   type: 'menu' | 'action' | 'input'
 }
 
 export interface PermissionUpdateData {
+  code?: string
   name?: string
   description?: string
   module?: string
+  moduleName?: string
   action?: string
   resource?: string
+  icon?: string
+  path?: string
   type?: 'menu' | 'action' | 'input'
   isActive?: boolean
 }

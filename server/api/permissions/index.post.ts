@@ -7,31 +7,35 @@ export default defineEventHandler(async (event) => {
     await connectMongoDB()
 
     const body = await readBody(event)
-    const { name, description, module, action, resource, type } = body
+    const { code, name, description, module, moduleName, action, resource, icon, path, type } = body
 
     // Validate required fields
-    if (!name || !description || !module || !action || !resource) {
+    if (!code || !name || !description || !module || !moduleName || !action) {
       throw createPredefinedError(API_RESPONSE_CODES.INVALID_INPUT, {
-        details: ['name', 'description', 'module', 'action', 'resource']
+        details: ['code', 'name', 'description', 'module', 'moduleName', 'action']
       })
     }
 
-    // Check if permission already exists
-    const existingPermission = await Permission.findOne({ name })
+    // Check if permission code already exists
+    const existingPermission = await Permission.findOne({ code })
     if (existingPermission) {
       throw createPredefinedError(API_RESPONSE_CODES.ALREADY_EXISTS, {
-        details: ['name']
+        details: ['code']
       })
     }
 
     // Create new permission
     const permission = new Permission({
+      code,
       name,
       description,
       module,
+      moduleName,
       action,
       resource,
-      type: type || 'action', // Use provided type or default to 'action'
+      icon,
+      path,
+      type: type || 'action',
       isActive: true
     })
 

@@ -113,7 +113,7 @@ export default defineEventHandler(async (event) => {
         runValidators: true,
         select: '_id name email role department position avatar lastLogin emailVerified isActive'
       }
-    ).populate('roles', 'name description isActive')
+    ).populate('roles', 'name code description isActive')
 
     if (!updatedUser) {
       throw createPredefinedError(API_RESPONSE_CODES.USER_NOT_FOUND)

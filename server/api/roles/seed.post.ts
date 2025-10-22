@@ -8,29 +8,6 @@ export default defineEventHandler(async (event) => {
   await connectMongoDB()
 
   try {
-    // Get token from Authorization header
-    const authHeader = getHeader(event, 'authorization')
-    const token = extractTokenFromHeader(authHeader)
-
-    if (!token) {
-      throw createPredefinedError(API_RESPONSE_CODES.UNAUTHORIZED)
-    }
-
-    // Verify and decode token
-    const decoded = verifyToken(token)
-
-    // Find current user to check permissions
-    const currentUser = await User.findById(decoded.userId)
-
-    if (!currentUser || !currentUser.isActive) {
-      throw createPredefinedError(API_RESPONSE_CODES.USER_NOT_FOUND)
-    }
-
-    // Check if user has permission to seed roles (admin only)
-    if (currentUser.role !== 'admin') {
-      throw createPredefinedError(API_RESPONSE_CODES.FORBIDDEN)
-    }
-
     // Check if roles already exist
     const existingRolesCount = await Role.countDocuments()
     if (existingRolesCount > 0) {
@@ -39,18 +16,35 @@ export default defineEventHandler(async (event) => {
       }, { responseType: API_RESPONSE_CODES.ALREADY_EXISTS })
     }
 
-    // Define initial roles
+    // Define initial roles (based on current database)
     const initialRoles = [
       {
-        name: 'Admin',
-        description: 'Full system access',
+        name: 'ผู้ดูแลระบบ',
+        code: 'admin',
+        description: 'มีสิทธิ์เข้าถึงระบบทั้งหมด / Full system access',
+        permissions: [
+          'dashboard.access',
+          'user_management.access',
+          'user_management.roles',
+          'user_management.users',
+          'user_management.permissions',
+          'components.access',
+          'demo.access'
+        ],
+        isActive: true,
+        createdBy: 'system'
+      },
+      {
+        name: 'ผู้พัฒนา',
+        code: 'developer',
+        description: 'developer',
         permissions: [
           'dashboard.access',
           'components.access',
-          'user_management.access',
-          'user_management.users',
+          'demo.access',
           'user_management.roles',
           'user_management.permissions',
+          'user_management.users'
         ],
         isActive: true,
         createdBy: 'system'

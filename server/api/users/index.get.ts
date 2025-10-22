@@ -66,7 +66,7 @@ export default defineEventHandler(async (event) => {
 
     // Get users with pagination and populate roles
     const users = await User.find(filter)
-      .populate('roles', 'name description isActive')
+      .populate('roles', 'name code description isActive')
       .select('_id name email role department position avatar lastLogin emailVerified isActive roles')
       .sort({ name: 1 })
       .skip((page - 1) * limit)

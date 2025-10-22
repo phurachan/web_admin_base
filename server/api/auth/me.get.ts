@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
 
     // Find user by ID and populate roles
     const user = await User.findById(decoded.userId)
-      .populate('roles', 'name description permissions isActive')
+      .populate('roles', 'name code description permissions isActive')
 
     if (!user || !user.isActive) {
       throw createPredefinedError(API_RESPONSE_CODES.USER_NOT_FOUND)

@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Find user by email and populate roles
-    const user = await User.findOne({ email }).populate('roles', 'name description permissions isActive')
+    const user = await User.findOne({ email }).populate('roles', 'name code description permissions isActive')
 
     if (!user) {
       throw createPredefinedError(API_RESPONSE_CODES.INVALID_CREDENTIALS)
