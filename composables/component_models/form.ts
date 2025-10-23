@@ -297,11 +297,47 @@ export interface BaseLoadingProps {
   backdropColor?: string
 }
 
+// Color Picker Props Interface
+export interface BaseColorPickerProps {
+  modelValue?: string
+  label?: string
+  placeholder?: string
+  required?: boolean
+  disabled?: boolean
+  error?: string
+  hint?: string
+  size?: 'xs' | 'sm' | 'md' | 'lg'
+  variant?: 'default' | 'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error' | 'ghost'
+  showPreview?: boolean
+  id?: string
+  name?: string
+}
+
+// File Upload Props Interface
+export interface BaseFileUploadProps {
+  modelValue?: string[]
+  label?: string
+  buttonText?: string
+  required?: boolean
+  disabled?: boolean
+  error?: string
+  hint?: string
+  size?: 'xs' | 'sm' | 'md' | 'lg'
+  variant?: 'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error' | 'ghost'
+  accept?: string
+  maxSize?: number
+  maxFiles?: number
+  multiple?: boolean
+  uploadEndpoint?: string
+  id?: string
+  name?: string
+}
+
 // Modal Props Interface
 export interface BaseModalProps {
   visible?: boolean
   title?: string
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl'
   closeable?: boolean
   backdrop?: boolean
   backdropClose?: boolean

@@ -448,6 +448,212 @@
             "example": ["64f123456789abcd12345679"]
           }
         }
+      },
+      "Feature1": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "64f123456789abcd12345680"
+          },
+          "code": {
+            "type": "integer",
+            "example": 100001,
+            "description": "Auto-generated running number"
+          },
+          "title": {
+            "type": "string",
+            "example": "ประกาศข่าวสาร"
+          },
+          "description": {
+            "type": "string",
+            "example": "ประกาศข่าวสารสำคัญของระบบและองค์กร"
+          },
+          "displayMode": {
+            "type": "string",
+            "enum": ["show_title", "show_title_desc", "show_title_icon"],
+            "example": "show_title_desc"
+          },
+          "icon": {
+            "type": "string",
+            "example": "megaphone",
+            "description": "HeroIcon name"
+          },
+          "color": {
+            "type": "string",
+            "example": "#3B82F6",
+            "description": "Hex color format"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["announcement", "promotion", "event", "news"],
+            "example": "announcement"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2025-01-01"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2025-12-31"
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["/uploads/image1.jpg", "/uploads/image2.png"]
+          },
+          "isActive": {
+            "type": "boolean",
+            "example": true
+          },
+          "createdBy": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              }
+            }
+          },
+          "updatedBy": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              }
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-10-22T10:30:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-10-22T10:30:00Z"
+          }
+        }
+      },
+      "Feature1CreateRequest": {
+        "type": "object",
+        "required": ["title", "description", "displayMode", "icon", "color", "type", "startDate", "endDate"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "ประกาศข่าวสาร"
+          },
+          "description": {
+            "type": "string",
+            "example": "ประกาศข่าวสารสำคัญของระบบและองค์กร"
+          },
+          "displayMode": {
+            "type": "string",
+            "enum": ["show_title", "show_title_desc", "show_title_icon"],
+            "example": "show_title_desc"
+          },
+          "icon": {
+            "type": "string",
+            "example": "megaphone"
+          },
+          "color": {
+            "type": "string",
+            "example": "#3B82F6"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["announcement", "promotion", "event", "news"],
+            "example": "announcement"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2025-01-01"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2025-12-31"
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": []
+          },
+          "isActive": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "Feature1UpdateRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "ประกาศข่าวสาร"
+          },
+          "description": {
+            "type": "string",
+            "example": "ประกาศข่าวสารสำคัญของระบบและองค์กร"
+          },
+          "displayMode": {
+            "type": "string",
+            "enum": ["show_title", "show_title_desc", "show_title_icon"],
+            "example": "show_title_desc"
+          },
+          "icon": {
+            "type": "string",
+            "example": "megaphone"
+          },
+          "color": {
+            "type": "string",
+            "example": "#3B82F6"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["announcement", "promotion", "event", "news"],
+            "example": "announcement"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2025-01-01"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2025-12-31"
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["/uploads/image1.jpg"]
+          },
+          "isActive": {
+            "type": "boolean",
+            "example": true
+          }
+        }
       }
     },
     "parameters": {
@@ -1686,6 +1892,274 @@
           }
         }
       }
+    },
+    "/feature1": {
+      "get": {
+        "tags": ["Feature Management"],
+        "summary": "Get all features",
+        "description": "Retrieve list of features with pagination and filtering",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PageParam"
+          },
+          {
+            "$ref": "#/components/parameters/LimitParam"
+          },
+          {
+            "$ref": "#/components/parameters/SearchParam"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Filter by feature type",
+            "schema": {
+              "type": "string",
+              "enum": ["announcement", "promotion", "event", "news"]
+            }
+          },
+          {
+            "name": "isActive",
+            "in": "query",
+            "description": "Filter by active status",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Features retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Feature1"
+                          }
+                        },
+                        "pagination": {
+                          "$ref": "#/components/schemas/Pagination"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Feature Management"],
+        "summary": "Create new feature",
+        "description": "Create a new feature with auto-generated code",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Feature1CreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Feature created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/Feature1"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/feature1/{id}": {
+      "get": {
+        "tags": ["Feature Management"],
+        "summary": "Get feature by ID",
+        "description": "Retrieve a single feature by its ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Feature ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Feature retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/Feature1"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Feature not found"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Feature Management"],
+        "summary": "Update feature",
+        "description": "Update an existing feature",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Feature ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Feature1UpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Feature updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/Feature1"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Feature not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Feature Management"],
+        "summary": "Delete feature",
+        "description": "Delete an existing feature",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Feature ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Feature deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Feature not found"
+          }
+        }
+      }
+    },
+    "/feature1/seed": {
+      "post": {
+        "tags": ["Feature Management"],
+        "summary": "Seed sample features",
+        "description": "Seed the database with sample features (only works if no features exist)",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Features seeded successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Feature1"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "tags": [
@@ -1704,6 +2178,10 @@
     {
       "name": "Permission Management",
       "description": "Permission management and assignment"
+    },
+    {
+      "name": "Feature Management",
+      "description": "Feature 1 CRUD operations"
     }
   ]
 }

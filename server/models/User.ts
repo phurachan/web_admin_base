@@ -176,4 +176,7 @@ UserSchema.virtual('fullName').get(function() {
   return this.name
 })
 
-export default mongoose.models.User || mongoose.model<IUser>('User', UserSchema)
+const UserModel = mongoose.models.User || mongoose.model<IUser>('User', UserSchema)
+
+export const User = UserModel
+export default UserModel

@@ -43,9 +43,11 @@ export async function connectMongoDB() {
       return mongoose
     })
   }
-  
+
   cached.conn = await cached.promise
   return cached.conn
 }
+
+export const connectDB = connectMongoDB
 
 export default connectMongoDB

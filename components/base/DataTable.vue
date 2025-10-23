@@ -121,10 +121,12 @@
                 :key="field.key"
                 :class="getCellClass(field)"
               >
-                <component
-                  :is="getCellComponent(field, row)"
-                  v-bind="getCellProps(field, row)"
-                />
+                <slot :name="`cell(${field.key})`" :row="row" :field="field" :value="row[field.key]">
+                  <component
+                    :is="getCellComponent(field, row)"
+                    v-bind="getCellProps(field, row)"
+                  />
+                </slot>
               </td>
             </tr>
 
@@ -167,10 +169,12 @@
                     :class="getCellClass(field)"
                   >
                     <div class="ml-6">
-                      <component
-                        :is="getCellComponent(field, child)"
-                        v-bind="getCellProps(field, child)"
-                      />
+                      <slot :name="`cell(${field.key})`" :row="child" :field="field" :value="child[field.key]">
+                        <component
+                          :is="getCellComponent(field, child)"
+                          v-bind="getCellProps(field, child)"
+                        />
+                      </slot>
                     </div>
                   </td>
                 </tr>
@@ -321,21 +325,19 @@ const getHeaderClass = (field: DataTableField): string => {
 
 const getRowClass = (row: DataTableRow, index: number): string => {
   const classes = []
-  
+
   if (row._selected) classes.push('bg-primary/10')
   if (row._disabled) classes.push('opacity-50')
-  else classes.push('cursor-pointer', 'hover:bg-base-100') // Add hover effect for main rows
-  
+
   return classes.join(' ')
 }
 
 const getChildRowClass = (row: DataTableRow, index: number): string => {
-  const classes = ['bg-gradient-to-r', 'from-base-200/60', 'to-base-200/40', 'border-l-4', 'border-l-base-300'] // Distinct gradient background for children
-  
-  if (row._selected) classes.push('!bg-gradient-to-r', '!from-primary/15', '!to-primary/10', '!border-l-primary') // Stronger highlight for selected children
+  const classes = ['bg-gradient-to-r', 'from-base-200/60', 'to-base-200/40', 'border-l-4', 'border-l-base-300']
+
+  if (row._selected) classes.push('!bg-gradient-to-r', '!from-primary/15', '!to-primary/10', '!border-l-primary')
   if (row._disabled) classes.push('opacity-50')
-  else classes.push('cursor-pointer', 'hover:from-base-200/80', 'hover:to-base-200/60') // Add hover effect for children
-  
+
   return classes.join(' ')
 }
 

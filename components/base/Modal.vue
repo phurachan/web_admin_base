@@ -71,13 +71,17 @@ const modalClasses = computed(() => {
   const classes = ['bg-base-100', 'rounded-lg', 'shadow-2xl', 'max-h-[90vh]', 'overflow-y-auto', 'relative']
   
   // Size classes
-  const sizeClasses = {
-    xs: 'w-full max-w-xs',
-    sm: 'w-full max-w-sm',
-    md: 'w-full max-w-md',
-    lg: 'w-full max-w-lg',
-    xl: 'w-full max-w-xl'
-  }
+    const sizeClasses = {
+      'xs': 'w-full max-w-xs',
+      'sm': 'w-full max-w-sm',
+      'md': 'w-full max-w-md',
+      'lg': 'w-full max-w-lg',
+      'xl': 'w-full max-w-xl',
+      '2xl': 'w-full max-w-2xl',
+      '3xl': 'w-full max-w-3xl',
+      '4xl': 'w-full max-w-4xl',
+      '5xl': 'w-full max-w-5xl'
+    }
   
   classes.push(sizeClasses[props.size])
   
