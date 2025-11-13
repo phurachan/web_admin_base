@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Admin Base - UI/UX Wireframes (Print Version)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        body {
+            font-family: 'Sarabun', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: white;
+        }
+
+        /* Each page container */
+        .page {
+            width: 297mm;
+            height: 210mm;
+            padding: 10mm;
+            margin: 0 auto 20px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            page-break-after: always;
+            page-break-inside: avoid;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Header page */
+        .header-page {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            color: white;
+        }
+
+        .header-page h1 {
+            font-size: 2.5rem;
+            margin: 0 0 15px 0;
+            text-align: center;
+        }
+
+        .header-page p {
+            font-size: 1.3rem;
+            margin: 0;
+            opacity: 0.95;
+        }
+
+        /* Screen page */
+        .screen-page {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-header {
+            margin-bottom: 6px;
+        }
+
+        .page-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            padding: 6px 12px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .page-title .separator {
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 400;
+        }
+
+        .mockup-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .desktop-mockup {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            min-height: 600px;
+            background: #fff;
+            border: 2px solid #333;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .desktop-mockup.with-modal {
+            min-height: 750px;
+        }
+
+        .screenview {
+            width: 100%;
+            height: 100%;
+            min-height: inherit;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Content Blur (for modal screens) */
+        .content-blur {
+            filter: blur(2px);
+            pointer-events: none;
+        }
+
+        /* Validation Error Styles */
+        .input-error {
+            border-color: #ef4444 !important;
+            background-color: #fef2f2 !important;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .page {
+                width: 297mm;
+                height: 210mm;
+                margin: 0;
+                box-shadow: none;
+                page-break-after: always;
+                page-break-inside: avoid;
+            }
+
+            @page {
+                size: A4 landscape;
+                margin: 0;
+            }
+        }
+
+        @media screen {
+            body {
+                background: #e5e7eb;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Page -->
+    <div class="page header-page">
+        <h1>Web Admin Base</h1>
+        <p>UI/UX Wireframe Documentation</p>
+    </div>
+
+    <!-- Screens will be appended here by /add-wireframe-screen command -->
+
+    <!-- Screen 1.1: หน้าแสดงรายการตัวอย่างที่ 1 -->
+    <div class="page screen-page">
+        <div class="page-header">
+            <div class="page-title">
+                Feature Sample 1 <span class="separator">›</span> 1.1 หน้าแสดงรายการตัวอย่างที่ 1
+            </div>
+        </div>
+        <div class="mockup-container">
+            <div class="desktop-mockup">
+                <div class="screenview">
+                    <nav class="bg-blue-600 text-white shadow-lg">
+    <div class="flex items-center justify-between px-6 py-3">
+        <div class="flex items-center space-x-4">
+            <div class="bg-white text-blue-600 font-bold px-3 py-1 rounded text-sm">LOGO</div>
+        </div>
+        <div class="text-lg font-bold">Web Admin Base</div>
+        <div class="flex items-center space-x-3">
+            <div class="text-right">
+                <div class="text-sm font-semibold">ผู้ดูแลระบบ</div>
+                <div class="text-xs text-blue-200">Admin</div>
+            </div>
+            <div class="w-10 h-10 bg-blue-800 rounded-full flex items-center justify-center text-sm font-bold">ผด</div>
+        </div>
+    </div>
+</nav>
+
+                    <!-- Main Layout -->
+                    <div class="flex" style="height: calc(100% - 60px);">
+                        <aside class="w-56 bg-gray-800 text-white">
+    <nav class="p-3">
+        <ul class="space-y-1">
+            <li>
+                <a href="#" class="block px-3 py-2 rounded hover:bg-gray-700 text-white font-semibold text-sm">
+                    🏠 หน้าหลัก
+                </a>
+            </li>
+            <li>
+                <a href="#" class="block px-3 py-2 rounded bg-gray-700 text-gray-300 text-sm">
+                    📊 จัดการข้อมูล
+                </a>
+            </li>
+            <li>
+                <a href="#" class="block px-3 py-2 rounded hover:bg-gray-700 text-gray-300 text-sm">
+                    📈 รายงาน
+                </a>
+            </li>
+            <li>
+                <a href="#" class="block px-3 py-2 rounded hover:bg-gray-700 text-gray-300 text-sm">
+                    ⚙️ ตั้งค่า
+                </a>
+            </li>
+        </ul>
+    </nav>
+</aside>
+
+                        <!-- Content -->
+                        <main class="flex-1 p-4 overflow-auto bg-gray-50">
+                            <!-- Page Header -->
+<div class="mb-3">
+    <h1 class="text-2xl font-bold text-gray-800 mb-1">จัดการระบบย่อย1 (FEATURE-001)</h1>
+    <nav class="flex mt-2 text-xs text-gray-600">
+        <span>หน้าหลัก</span>
+        <span class="mx-1">/</span>
+        <span>จัดการข้อมูล</span>
+        <span class="mx-1">/</span>
+        <span>จัดการระบบย่อย1</span>
+    </nav>
+</div>
+
+<!-- Search and Filter -->
+<div class="bg-white rounded-lg shadow p-3 mb-3">
+    <div class="grid grid-cols-3 gap-3 mb-3">
+        <input type="text" placeholder="ค้นหา Feature..." class="px-3 py-2 text-sm border border-gray-300 rounded"/>
+        <select class="px-3 py-2 text-sm border border-gray-300 rounded">
+            <option>ประเภททั้งหมด</option>
+            <option>ประกาศ</option>
+            <option>โปรโมชั่น</option>
+            <option>กิจกรรม</option>
+            <option>ข่าวสาร</option>
+        </select>
+        <select class="px-3 py-2 text-sm border border-gray-300 rounded">
+            <option>สถานะทั้งหมด</option>
+            <option>เปิดใช้งาน</option>
+            <option>ปิดใช้งาน</option>
+        </select>
+    </div>
+    <div class="flex justify-end">
+        <button class="px-3 py-2 text-sm bg-green-600 text-white rounded font-semibold">+ เพิ่ม Feature</button>
+    </div>
+</div>
+
+<!-- Data Table -->
+<div class="bg-white rounded-lg shadow p-3">
+    <div class="overflow-x-auto">
+        <table class="w-full text-xs">
+            <thead>
+                <tr class="bg-gray-50 border-b">
+                    <th class="px-2 py-2 text-left font-semibold text-gray-700">รหัส</th>
+                    <th class="px-2 py-2 text-left font-semibold text-gray-700">ชื่อ & รายละเอียด</th>
+                    <th class="px-2 py-2 text-left font-semibold text-gray-700">ประเภท</th>
+                    <th class="px-2 py-2 text-left font-semibold text-gray-700">โหมดแสดงผล</th>
+                    <th class="px-2 py-2 text-left font-semibold text-gray-700">ระยะเวลา</th>
+                    <th class="px-2 py-2 text-center font-semibold text-gray-700">รูปภาพ</th>
+                    <th class="px-2 py-2 text-center font-semibold text-gray-700">สถานะ</th>
+                    <th class="px-2 py-2 text-center font-semibold text-gray-700">จัดการ</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="px-2 py-2">
+                        <div class="font-mono font-semibold text-blue-600">F1-001</div>
+                    </td>
+                    <td class="px-2 py-2">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded flex items-center justify-center bg-blue-100">
+                                <span class="text-blue-600">⭐</span>
+                            </div>
+                            <div>
+                                <div class="font-medium">ประกาศสำคัญ</div>
+                                <div class="text-xs text-gray-600">ประกาศข่าวสารสำคัญของระบบ</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-2 py-2">
+                        <div class="badge badge-outline">ประกาศ</div>
+                    </td>
+                    <td class="px-2 py-2">
+                        <div class="text-sm">แสดงชื่อและรายละเอียด</div>
+                    </td>
+                    <td class="px-2 py-2">
+                        <div class="text-sm">01/11/2568</div>
+                        <div class="text-xs text-gray-600">ถึง 30/11/2568</div>
+                    </td>
+                    <td class="px-2 py-2 text-center">
+                        <div class="badge badge-ghost">3 รูป</div>
+                    </td>
+                    <td class="px-2 py-2 text-center">
+                        <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-green-100 text-green-800">เปิดใช้งาน</span>
+                    </td>
+                    <td class="px-2 py-2 text-center">
+                        <button class="px-2 py-0.5 text-xs bg-blue-600 text-white rounded mr-1">แก้ไข</button>
+                        <button class="px-2 py-0.5 text-xs bg-red-600 text-white rounded">ลบ</button>
+                    </td>
+                </tr>
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="px-2 py-2">
+                        <div class="font-mono font-semibold text-blue-600">F1-002</div>
+                    </td>
+                    <td class="px-2 py-2">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded flex items-center justify-center bg-green-100">
+                                <span class="text-green-600">🎉</span>
+                            </div>
+                            <div>
+                                <div class="font-medium">โปรโมชั่นพิเศษ</div>
+                                <div class="text-xs text-gray-600">โปรโมชั่นสำหรับสมาชิกใหม่</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-2 py-2">
+                        <div class="badge badge-outline">โปรโมชั่น</div>
+                    </td>
+                    <td class="px-2 py-2">
+                        <div class="text-sm">แสดงเฉพาะชื่อ</div>
+                    </td>
+                    <td class="px-2 py-2">
+                        <div class="text-sm">15/11/2568</div>
+                        <div class="text-xs text-gray-600">ถึง 31/12/2568</div>
+                    </td>
+                    <td class="px-2 py-2 text-center">
+                        <div class="badge badge-ghost">5 รูป</div>
+                    </td>
+                    <td class="px-2 py-2 text-center">
+                        <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-green-100 text-green-800">เปิดใช้งาน</span>
+                    </td>
+                    <td class="px-2 py-2 text-center">
+                        <button class="px-2 py-0.5 text-xs bg-blue-600 text-white rounded mr-1">แก้ไข</button>
+                        <button class="px-2 py-0.5 text-xs bg-red-600 text-white rounded">ลบ</button>
+                    </td>
+                </tr>
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="px-2 py-2">
+                        <div class="font-mono font-semibold text-blue-600">F1-003</div>
+                    </td>
+                    <td class="px-2 py-2">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded flex items-center justify-center bg-purple-100">
+                                <span class="text-purple-600">📅</span>
+                            </div>
+                            <div>
+                                <div class="font-medium">กิจกรรมประจำเดือน</div>
+                                <div class="text-xs text-gray-600">กิจกรรมพิเศษประจำเดือน</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-2 py-2">
+                        <div class="badge badge-outline">กิจกรรม</div>
+                    </td>
+                    <td class="px-2 py-2">
+                        <div class="text-sm">แสดงชื่อและรายละเอียด</div>
+                    </td>
+                    <td class="px-2 py-2">
+                        <div class="text-sm">01/12/2568</div>
+                        <div class="text-xs text-gray-600">ถึง 31/12/2568</div>
+                    </td>
+                    <td class="px-2 py-2 text-center">
+                        <div class="badge badge-ghost">2 รูป</div>
+                    </td>
+                    <td class="px-2 py-2 text-center">
+                        <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-red-100 text-red-800">ปิดใช้งาน</span>
+                    </td>
+                    <td class="px-2 py-2 text-center">
+                        <button class="px-2 py-0.5 text-xs bg-blue-600 text-white rounded mr-1">แก้ไข</button>
+                        <button class="px-2 py-0.5 text-xs bg-red-600 text-white rounded">ลบ</button>
+                    </td>
+                </tr>
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="px-2 py-2">
+                        <div class="font-mono font-semibold text-blue-600">F1-004</div>
+                    </td>
+                    <td class="px-2 py-2">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded flex items-center justify-center bg-orange-100">
+                                <span class="text-orange-600">📰</span>
+                            </div>
+                            <div>
+                                <div class="font-medium">ข่าวสารอัปเดต</div>
+                                <div class="text-xs text-gray-600">ข่าวสารและอัปเดตล่าสุด</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-2 py-2">
+                        <div class="badge badge-outline">ข่าวสาร</div>
+                    </td>
+                    <td class="px-2 py-2">
+                        <div class="text-sm">แสดงชื่อและรายละเอียด</div>
+                    </td>
+                    <td class="px-2 py-2">
+                        <div class="text-sm">10/11/2568</div>
+                        <div class="text-xs text-gray-600">ถึง 20/11/2568</div>
+                    </td>
+                    <td class="px-2 py-2 text-center">
+                        <div class="badge badge-ghost">1 รูป</div>
+                    </td>
+                    <td class="px-2 py-2 text-center">
+                        <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-green-100 text-green-800">เปิดใช้งาน</span>
+                    </td>
+                    <td class="px-2 py-2 text-center">
+                        <button class="px-2 py-0.5 text-xs bg-blue-600 text-white rounded mr-1">แก้ไข</button>
+                        <button class="px-2 py-0.5 text-xs bg-red-600 text-white rounded">ลบ</button>
+                    </td>
+                </tr>
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="px-2 py-2">
+                        <div class="font-mono font-semibold text-blue-600">F1-005</div>
+                    </td>
+                    <td class="px-2 py-2">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded flex items-center justify-center bg-red-100">
+                                <span class="text-red-600">⚠️</span>
+                            </div>
+                            <div>
+                                <div class="font-medium">แจ้งเตือนสำคัญ</div>
+                                <div class="text-xs text-gray-600">แจ้งเตือนข้อมูลสำคัญ</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-2 py-2">
+                        <div class="badge badge-outline">ประกาศ</div>
+                    </td>
+                    <td class="px-2 py-2">
+                        <div class="text-sm">แสดงเฉพาะชื่อ</div>
+                    </td>
+                    <td class="px-2 py-2">
+                        <div class="text-sm">05/11/2568</div>
+                        <div class="text-xs text-gray-600">ถึง 15/11/2568</div>
+                    </td>
+                    <td class="px-2 py-2 text-center">
+                        <div class="badge badge-ghost">0 รูป</div>
+                    </td>
+                    <td class="px-2 py-2 text-center">
+                        <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-green-100 text-green-800">เปิดใช้งาน</span>
+                    </td>
+                    <td class="px-2 py-2 text-center">
+                        <button class="px-2 py-0.5 text-xs bg-blue-600 text-white rounded mr-1">แก้ไข</button>
+                        <button class="px-2 py-0.5 text-xs bg-red-600 text-white rounded">ลบ</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex justify-between items-center mt-3 text-xs">
+        <div class="text-gray-600">แสดง 1-5 จาก 25 รายการ</div>
+        <div class="flex space-x-1">
+            <button class="px-2 py-1 border border-gray-300 rounded">ก่อนหน้า</button>
+            <button class="px-2 py-1 border border-blue-600 bg-blue-600 text-white rounded">1</button>
+            <button class="px-2 py-1 border border-gray-300 rounded">2</button>
+            <button class="px-2 py-1 border border-gray-300 rounded">3</button>
+            <button class="px-2 py-1 border border-gray-300 rounded">ถัดไป</button>
+        </div>
+    </div>
+</div>
+                        </main>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Screen 1.2: หน้าเพิ่มตัวอย่างที่ 1 -->
+    <div class="page screen-page">
+        <div class="page-header">
+            <div class="page-title">
+                Feature Sample 1 <span class="separator">›</span> 1.2 หน้าเพิ่มตัวอย่างที่ 1
+            </div>
+        </div>
+        <div class="mockup-container">
+            <div class="desktop-mockup with-modal">
+                <div class="screenview">
+                    <nav class="bg-blue-600 text-white shadow-lg">
+    <div class="flex items-center justify-between px-6 py-3">
+        <div class="flex items-center space-x-4">
+            <div class="bg-white text-blue-600 font-bold px-3 py-1 rounded text-sm">LOGO</div>
+        </div>
+        <div class="text-lg font-bold">Web Admin Base</div>
+        <div class="flex items-center space-x-3">
+            <div class="text-right">
+                <div class="text-sm font-semibold">ผู้ดูแลระบบ</div>
+                <div class="text-xs text-blue-200">Admin</div>
+            </div>
+            <div class="w-10 h-10 bg-blue-800 rounded-full flex items-center justify-center text-sm font-bold">ผด</div>
+        </div>
+    </div>
+</nav>
+
+                    <!-- Main Layout -->
+                    <div class="flex" style="height: calc(100% - 60px);">
+                        <aside class="w-56 bg-gray-800 text-white">
+    <nav class="p-3">
+        <ul class="space-y-1">
+            <li>
+                <a href="#" class="block px-3 py-2 rounded hover:bg-gray-700 text-white font-semibold text-sm">
+                    🏠 หน้าหลัก
+                </a>
+            </li>
+            <li>
+                <a href="#" class="block px-3 py-2 rounded bg-gray-700 text-gray-300 text-sm">
+                    📊 จัดการข้อมูล
+                </a>
+            </li>
+            <li>
+                <a href="#" class="block px-3 py-2 rounded hover:bg-gray-700 text-gray-300 text-sm">
+                    📈 รายงาน
+                </a>
+            </li>
+            <li>
+                <a href="#" class="block px-3 py-2 rounded hover:bg-gray-700 text-gray-300 text-sm">
+                    ⚙️ ตั้งค่า
+                </a>
+            </li>
+        </ul>
+    </nav>
+</aside>
+
+                        <!-- Content -->
+                        <main class="flex-1 p-4 overflow-auto bg-gray-50" style="filter: blur(2px);">
+                            <div class="mb-3">
+                                <h1 class="text-2xl font-bold text-gray-800">จัดการระบบย่อย1</h1>
+                                <div class="text-sm text-gray-600">Content blurred...</div>
+                            </div>
+                        </main>
+                    </div>
+
+                    <!-- Modal Overlay -->
+                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center;">
+                        <!-- Modal Dialog -->
+                        <div class="bg-white rounded-lg shadow-xl" style="width: 600px; max-height: 90%;">
+                            <!-- Modal Header -->
+                            <div class="bg-blue-600 text-white px-4 py-3 rounded-t-lg flex justify-between items-center">
+                                <h2 class="text-lg font-semibold">เพิ่ม Feature</h2>
+                                <button class="text-white hover:text-gray-200 text-2xl leading-none">&times;</button>
+                            </div>
+
+                            <!-- Modal Body -->
+                            <div class="p-4" style="max-height: 500px; overflow-y: auto;">
+                                <form>
+                                    <div class="grid grid-cols-2 gap-3 mb-3">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                ชื่อ Feature <span class="text-red-500">*</span>
+                                            </label>
+                                            <input type="text" placeholder="กรอกชื่อ Feature" class="w-full px-3 py-2 text-sm border border-gray-300 rounded">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                ประเภท <span class="text-red-500">*</span>
+                                            </label>
+                                            <select class="w-full px-3 py-2 text-sm border border-gray-300 rounded">
+                                                <option value="">เลือกประเภท</option>
+                                                <option value="announcement">ประกาศ</option>
+                                                <option value="promotion">โปรโมชั่น</option>
+                                                <option value="activity">กิจกรรม</option>
+                                                <option value="news">ข่าวสาร</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                                            รายละเอียด <span class="text-red-500">*</span>
+                                        </label>
+                                        <textarea rows="3" placeholder="กรอกรายละเอียด Feature" class="w-full px-3 py-2 text-sm border border-gray-300 rounded"></textarea>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                                            โหมดการแสดงผล <span class="text-red-500">*</span>
+                                        </label>
+                                        <div class="space-y-2">
+                                            <label class="flex items-center gap-2 text-sm">
+                                                <input type="radio" name="displayMode" value="show_title_desc" class="w-4 h-4">
+                                                <span>แสดงชื่อและรายละเอียด</span>
+                                            </label>
+                                            <label class="flex items-center gap-2 text-sm">
+                                                <input type="radio" name="displayMode" value="show_title_only" class="w-4 h-4">
+                                                <span>แสดงเฉพาะชื่อ</span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-3 mb-3">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                ไอคอน <span class="text-red-500">*</span>
+                                            </label>
+                                            <input type="text" placeholder="เลือกไอคอน" class="w-full px-3 py-2 text-sm border border-gray-300 rounded">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                สี <span class="text-red-500">*</span>
+                                            </label>
+                                            <input type="text" placeholder="#3B82F6" class="w-full px-3 py-2 text-sm border border-gray-300 rounded">
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-3 mb-3">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                วันที่เริ่มต้น <span class="text-red-500">*</span>
+                                            </label>
+                                            <input type="date" class="w-full px-3 py-2 text-sm border border-gray-300 rounded">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                วันที่สิ้นสุด <span class="text-red-500">*</span>
+                                            </label>
+                                            <input type="date" class="w-full px-3 py-2 text-sm border border-gray-300 rounded">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                                            รูปภาพ
+                                        </label>
+                                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+                                            <div class="text-gray-400 text-sm">อัปโหลดได้สูงสุด 5 ไฟล์</div>
+                                            <div class="text-gray-400 text-xs">ขนาดไม่เกิน 5MB ต่อไฟล์</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                            <input type="checkbox" class="w-4 h-4" checked>
+                                            <span>เปิดใช้งาน</span>
+                                        </label>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Modal Footer -->
+                            <div class="bg-gray-50 px-4 py-3 rounded-b-lg flex justify-end space-x-2">
+                                <button class="px-4 py-2 text-sm border border-gray-300 rounded hover:bg-gray-100 font-medium">
+                                    ยกเลิก
+                                </button>
+                                <button class="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 font-medium">
+                                    บันทึก
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Screen 1.3: หน้าตรวจสอบข้อมูลก่อนบันทึกตัวอย่างที่ 1 -->
+    <div class="page screen-page">
+        <div class="page-header">
+            <div class="page-title">
+                Feature Sample 1 <span class="separator">›</span> 1.3 หน้าตรวจสอบข้อมูลก่อนบันทึกตัวอย่างที่ 1
+            </div>
+        </div>
+        <div class="mockup-container">
+            <div class="desktop-mockup with-modal">
+                <div class="screenview">
+                    <nav class="bg-blue-600 text-white shadow-lg">
+    <div class="flex items-center justify-between px-6 py-3">
+        <div class="flex items-center space-x-4">
+            <div class="bg-white text-blue-600 font-bold px-3 py-1 rounded text-sm">LOGO</div>
+        </div>
+        <div class="text-lg font-bold">Web Admin Base</div>
+        <div class="flex items-center space-x-3">
+            <div class="text-right">
+                <div class="text-sm font-semibold">ผู้ดูแลระบบ</div>
+                <div class="text-xs text-blue-200">Admin</div>
+            </div>
+            <div class="w-10 h-10 bg-blue-800 rounded-full flex items-center justify-center text-sm font-bold">ผด</div>
+        </div>
+    </div>
+</nav>
+
+                    <!-- Main Layout -->
+                    <div class="flex" style="height: calc(100% - 60px);">
+                        <aside class="w-56 bg-gray-800 text-white">
+    <nav class="p-3">
+        <ul class="space-y-1">
+            <li>
+                <a href="#" class="block px-3 py-2 rounded hover:bg-gray-700 text-white font-semibold text-sm">
+                    🏠 หน้าหลัก
+                </a>
+            </li>
+            <li>
+                <a href="#" class="block px-3 py-2 rounded bg-gray-700 text-gray-300 text-sm">
+                    📊 จัดการข้อมูล
+                </a>
+            </li>
+            <li>
+                <a href="#" class="block px-3 py-2 rounded hover:bg-gray-700 text-gray-300 text-sm">
+                    📈 รายงาน
+                </a>
+            </li>
+            <li>
+                <a href="#" class="block px-3 py-2 rounded hover:bg-gray-700 text-gray-300 text-sm">
+                    ⚙️ ตั้งค่า
+                </a>
+            </li>
+        </ul>
+    </nav>
+</aside>
+
+                        <!-- Content -->
+                        <main class="flex-1 p-4 overflow-auto bg-gray-50" style="filter: blur(2px);">
+                            <div class="mb-3">
+                                <h1 class="text-2xl font-bold text-gray-800">จัดการระบบย่อย1</h1>
+                                <div class="text-sm text-gray-600">Content blurred...</div>
+                            </div>
+                        </main>
+                    </div>
+
+                    <!-- Modal Overlay -->
+                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center;">
+                        <!-- Modal Dialog -->
+                        <div class="bg-white rounded-lg shadow-xl" style="width: 600px; max-height: 90%;">
+                            <!-- Modal Header -->
+                            <div class="bg-blue-600 text-white px-4 py-3 rounded-t-lg flex justify-between items-center">
+                                <h2 class="text-lg font-semibold">เพิ่ม Feature</h2>
+                                <button class="text-white hover:text-gray-200 text-2xl leading-none">&times;</button>
+                            </div>
+
+                            <!-- Modal Body -->
+                            <div class="p-4" style="max-height: 500px; overflow-y: auto;">
+                                <form>
+                                    <div class="grid grid-cols-2 gap-3 mb-3">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                ชื่อ Feature <span class="text-red-500">*</span>
+                                            </label>
+                                            <input type="text" placeholder="กรอกชื่อ Feature" class="w-full px-3 py-2 text-sm border border-gray-300 rounded input-error">
+                                            <div class="error-message">กรุณากรอกชื่อ Feature</div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                ประเภท <span class="text-red-500">*</span>
+                                            </label>
+                                            <select class="w-full px-3 py-2 text-sm border border-gray-300 rounded input-error">
+                                                <option value="">เลือกประเภท</option>
+                                                <option value="announcement">ประกาศ</option>
+                                                <option value="promotion">โปรโมชั่น</option>
+                                                <option value="activity">กิจกรรม</option>
+                                                <option value="news">ข่าวสาร</option>
+                                            </select>
+                                            <div class="error-message">กรุณาเลือกประเภท</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                                            รายละเอียด <span class="text-red-500">*</span>
+                                        </label>
+                                        <textarea rows="3" placeholder="กรอกรายละเอียด Feature" class="w-full px-3 py-2 text-sm border border-gray-300 rounded"></textarea>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                                            โหมดการแสดงผล <span class="text-red-500">*</span>
+                                        </label>
+                                        <div class="space-y-2">
+                                            <label class="flex items-center gap-2 text-sm">
+                                                <input type="radio" name="displayMode" value="show_title_desc" class="w-4 h-4">
+                                                <span>แสดงชื่อและรายละเอียด</span>
+                                            </label>
+                                            <label class="flex items-center gap-2 text-sm">
+                                                <input type="radio" name="displayMode" value="show_title_only" class="w-4 h-4">
+                                                <span>แสดงเฉพาะชื่อ</span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-3 mb-3">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                ไอคอน <span class="text-red-500">*</span>
+                                            </label>
+                                            <input type="text" placeholder="เลือกไอคอน" class="w-full px-3 py-2 text-sm border border-gray-300 rounded input-error">
+                                            <div class="error-message">กรุณาเลือกไอคอน</div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                สี <span class="text-red-500">*</span>
+                                            </label>
+                                            <input type="text" placeholder="#3B82F6" class="w-full px-3 py-2 text-sm border border-gray-300 rounded">
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-3 mb-3">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                วันที่เริ่มต้น <span class="text-red-500">*</span>
+                                            </label>
+                                            <input type="date" class="w-full px-3 py-2 text-sm border border-gray-300 rounded">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                                วันที่สิ้นสุด <span class="text-red-500">*</span>
+                                            </label>
+                                            <input type="date" class="w-full px-3 py-2 text-sm border border-gray-300 rounded input-error">
+                                            <div class="error-message">วันที่สิ้นสุดต้องมากกว่าวันที่เริ่มต้น</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                                            รูปภาพ
+                                        </label>
+                                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+                                            <div class="text-gray-400 text-sm">อัปโหลดได้สูงสุด 5 ไฟล์</div>
+                                            <div class="text-gray-400 text-xs">ขนาดไม่เกิน 5MB ต่อไฟล์</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                            <input type="checkbox" class="w-4 h-4" checked>
+                                            <span>เปิดใช้งาน</span>
+                                        </label>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Modal Footer -->
+                            <div class="bg-gray-50 px-4 py-3 rounded-b-lg flex justify-end space-x-2">
+                                <button class="px-4 py-2 text-sm border border-gray-300 rounded hover:bg-gray-100 font-medium">
+                                    ยกเลิก
+                                </button>
+                                <button class="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 font-medium">
+                                    บันทึก
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Screen 1.4: หน้ายืนยันลบข้อมูลตัวอย่างที่ 1 -->
+    <div class="page screen-page">
+        <div class="page-header">
+            <div class="page-title">
+                Feature Sample 1 <span class="separator">›</span> 1.4 หน้ายืนยันลบข้อมูลตัวอย่างที่ 1
+            </div>
+        </div>
+        <div class="mockup-container">
+            <div class="desktop-mockup with-modal">
+                <div class="screenview">
+                    <nav class="bg-blue-600 text-white shadow-lg">
+    <div class="flex items-center justify-between px-6 py-3">
+        <div class="flex items-center space-x-4">
+            <div class="bg-white text-blue-600 font-bold px-3 py-1 rounded text-sm">LOGO</div>
+        </div>
+        <div class="text-lg font-bold">Web Admin Base</div>
+        <div class="flex items-center space-x-3">
+            <div class="text-right">
+                <div class="text-sm font-semibold">ผู้ดูแลระบบ</div>
+                <div class="text-xs text-blue-200">Admin</div>
+            </div>
+            <div class="w-10 h-10 bg-blue-800 rounded-full flex items-center justify-center text-sm font-bold">ผด</div>
+        </div>
+    </div>
+</nav>
+
+                    <!-- Main Layout -->
+                    <div class="flex" style="height: calc(100% - 60px);">
+                        <aside class="w-56 bg-gray-800 text-white">
+    <nav class="p-3">
+        <ul class="space-y-1">
+            <li>
+                <a href="#" class="block px-3 py-2 rounded hover:bg-gray-700 text-white font-semibold text-sm">
+                    🏠 หน้าหลัก
+                </a>
+            </li>
+            <li>
+                <a href="#" class="block px-3 py-2 rounded bg-gray-700 text-gray-300 text-sm">
+                    📊 จัดการข้อมูล
+                </a>
+            </li>
+            <li>
+                <a href="#" class="block px-3 py-2 rounded hover:bg-gray-700 text-gray-300 text-sm">
+                    📈 รายงาน
+                </a>
+            </li>
+            <li>
+                <a href="#" class="block px-3 py-2 rounded hover:bg-gray-700 text-gray-300 text-sm">
+                    ⚙️ ตั้งค่า
+                </a>
+            </li>
+        </ul>
+    </nav>
+</aside>
+
+                        <!-- Content -->
+                        <main class="flex-1 p-4 overflow-auto bg-gray-50" style="filter: blur(2px);">
+                            <div class="mb-3">
+                                <h1 class="text-2xl font-bold text-gray-800">จัดการระบบย่อย1</h1>
+                                <div class="text-sm text-gray-600">Content blurred...</div>
+                            </div>
+                        </main>
+                    </div>
+
+                    <!-- Modal Overlay -->
+                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center;">
+                        <!-- Modal Dialog -->
+                        <div class="bg-white rounded-lg shadow-xl" style="width: 450px;">
+                            <!-- Modal Header -->
+                            <div class="bg-red-600 text-white px-4 py-3 rounded-t-lg flex justify-between items-center">
+                                <h2 class="text-lg font-semibold">ยืนยันการลบข้อมูล</h2>
+                                <button class="text-white hover:text-gray-200 text-2xl leading-none">&times;</button>
+                            </div>
+
+                            <!-- Modal Body -->
+                            <div class="p-4 text-center">
+                                <div class="text-5xl mb-3">⚠️</div>
+                                <p class="text-gray-800 font-semibold mb-2">คุณแน่ใจหรือไม่ที่จะลบข้อมูลนี้?</p>
+                                <div class="bg-gray-50 rounded-lg p-3 my-3 text-left">
+                                    <div class="text-sm font-medium text-gray-700 mb-1">Feature: ประกาศสำคัญ</div>
+                                    <div class="text-xs text-gray-600">รหัส: F1-001</div>
+                                    <div class="text-xs text-gray-600">ประเภท: ประกาศ</div>
+                                </div>
+                                <p class="text-sm text-red-600 mt-2">การลบข้อมูลนี้ไม่สามารถย้อนกลับได้</p>
+                            </div>
+
+                            <!-- Modal Footer -->
+                            <div class="bg-gray-50 px-4 py-3 rounded-b-lg flex justify-end space-x-2">
+                                <button class="px-4 py-2 text-sm border border-gray-300 rounded hover:bg-gray-100 font-medium">
+                                    ยกเลิก
+                                </button>
+                                <button class="px-4 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700 font-medium">
+                                    ลบข้อมูล
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

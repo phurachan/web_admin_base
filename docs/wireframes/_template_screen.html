@@ -1,0 +1,27 @@
+    <!-- Screen {{SCREEN_NUMBER}}: {{SCREEN_TITLE}} -->
+    <div class="page screen-page">
+        <div class="page-header">
+            <div class="page-title">
+                {{MODULE_TITLE}} <span class="separator">›</span> {{SCREEN_NUMBER}} {{SCREEN_TITLE}}
+            </div>
+        </div>
+        <div class="mockup-container">
+            <div class="desktop-mockup{{WITH_MODAL_CLASS}}">
+                <div class="screenview">
+                    {{NAVBAR}}
+
+                    <!-- Main Layout -->
+                    <div class="flex" style="height: calc(100% - 60px);">
+                        {{SIDEBAR}}
+
+                        <!-- Content -->
+                        <main class="flex-1 p-4 overflow-auto bg-gray-50{{BLUR_CLASS}}">
+                            {{CONTENT}}
+                        </main>
+                    </div>
+
+                    {{MODAL}}
+                </div>
+            </div>
+        </div>
+    </div>
